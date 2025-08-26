@@ -2,13 +2,14 @@
 import React, { useState } from "react";
 import {
   Sheet,
+  SheetClose,
   SheetContent,
   SheetDescription,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { Search, X } from "lucide-react";
+import { ArrowLeft, Search, X } from "lucide-react";
 
 const ProductSearch = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -44,15 +45,16 @@ const ProductSearch = () => {
           <Search size={14} />
         </div>
       </SheetTrigger>
-      <SheetContent className="px-4">
+      <SheetContent className="px-4 min-w-full sm:min-w-[400px] md:min-w-[500px] lg:min-w-[500px] xl:min-w-[500px] 2xl:min-w-[600px]">
         <SheetHeader className="mb-6">
           <SheetTitle className=" flex justify-between items-center font-bold">
             {" "}
-            <div> &larr;</div>
-            <button className="text-blue-600 text-[24px]  flex items-center text-sm font-medium">
-              Back to Shopping
-            </button>
-            <div></div>{" "}
+            <SheetClose asChild>
+              <button className="flex items-center text-blue-600 text-[24px] font-medium hover:underline">
+                <ArrowLeft className="mr-2" />
+                Back to Shopping
+              </button>
+            </SheetClose>
           </SheetTitle>
           <SheetDescription className="text-base"></SheetDescription>
         </SheetHeader>

@@ -84,7 +84,7 @@ const Cart = () => {
         <SheetTrigger className="h-8 px-4 font-bold text-[14px] bg-gray-200 rounded-full flex justify-center items-center">
           Cart ({cartItems.length})
         </SheetTrigger>
-        <SheetContent className="px-4 ">
+        <SheetContent className="px-4 min-w-full sm:min-w-[400px]">
           <SheetHeader className="mb-6 ">
             <SheetTitle className="flex justify-between items-center font-bold ">
               {/* Back button (using SheetClose) */}

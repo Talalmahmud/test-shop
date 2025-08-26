@@ -11,6 +11,7 @@ import {
   NavigationMenuTrigger,
 } from "../ui/navigation-menu";
 import Image from "next/image";
+import MobileMenu from "./mobile-menu";
 
 const linkList = [
   { name: "Home", href: "#" },
@@ -22,7 +23,8 @@ const linkList = [
 const Header = () => {
   return (
     <div className="bg-white flex items-center justify-between w-screem  border-b-[1px] border-slate-300 py-4 top-0 left-0 sticky z-50 ">
-      <NavigationMenu className=" px-6">
+      <MobileMenu />
+      <NavigationMenu className=" hidden md:block px-6">
         <NavigationMenuList>
           <NavigationMenuItem>
             <NavigationMenuTrigger className=" [&>svg]:hidden">
