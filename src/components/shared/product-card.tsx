@@ -34,28 +34,31 @@ export default function ProductCard({
   href = "/product/8",
 }: ProductCardProps) {
   return (
-    <Card className="group relative w-full max-w-xs rounded-2xl shadow-md hover:shadow-lg transition">
+    <Card className="group relative w-[380px] rounded-2xl shadow-sm hover:shadow-md transition duration-300">
       {/* Tag Badge */}
       {tag && (
-        <span className="absolute top-2 right-2 bg-green-400 text-white text-xs px-2 py-1 rounded-md">
+        <span className="absolute z-20 top-2 right-2 bg-green-500 text-white text-xs px-2 py-1 rounded-md">
           {tag}
         </span>
       )}
 
-      {/* Image */}
       <Link href={href}>
-        <CardContent className="flex flex-col items-center p-4">
-          <div className="relative w-48 h-48">
+        <CardContent className="flex flex-col w-full items-center ">
+          {/* Image Wrapper */}
+          <div className="relative w-full h-[400px] overflow-hidden rounded-xl bg-gray-50">
             <Image
               src={image}
               alt={title}
               fill
-              className="object-contain rounded-lg"
+              className="object-contain transition-transform duration-300 group-hover:scale-105"
+              sizes="(max-width: 768px) 100vw, 400px"
             />
           </div>
 
           {/* Title */}
-          <h3 className="mt-3 text-lg font-semibold text-center">{title}</h3>
+          <h3 className="mt-3 text-base font-semibold text-center line-clamp-2">
+            {title}
+          </h3>
 
           {/* Rating */}
           <div className="flex items-center gap-1 mt-1 text-yellow-500">
@@ -63,7 +66,11 @@ export default function ProductCard({
               <Star
                 key={i}
                 size={16}
-                className={cn(i < rating ? "fill-yellow-500" : "fill-gray-200")}
+                className={cn(
+                  i < rating
+                    ? "fill-yellow-500 stroke-yellow-500"
+                    : "fill-gray-200 stroke-gray-400"
+                )}
               />
             ))}
             <span className="ml-1 text-sm text-gray-500">({reviews})</span>
@@ -71,7 +78,7 @@ export default function ProductCard({
 
           {/* Price */}
           <div className="mt-2 flex flex-col items-center">
-            <span className="text-red-600 font-semibold">
+            <span className="text-red-600 font-semibold text-lg">
               BDT {discountedPrice.toLocaleString()}
             </span>
             <span className="line-through text-gray-400 text-sm">
@@ -88,7 +95,7 @@ export default function ProductCard({
               {colorOptions.map((color, i) => (
                 <span
                   key={i}
-                  className="w-5 h-5 rounded-full border"
+                  className="w-5 h-5 rounded-full border shadow-sm"
                   style={{ backgroundColor: color }}
                 />
               ))}

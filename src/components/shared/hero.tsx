@@ -84,13 +84,6 @@ const Hero = () => {
         fadeEffect={{ crossFade: true }}
         className="h-[700px] w-full"
         onSwiper={setSwiperInstance}
-        onInit={(swiper) => {
-          // Reinitialize navigation with the correct elements
-          setTimeout(() => {
-            swiper.navigation.init();
-            swiper.navigation.update();
-          }, 100);
-        }}
       >
         {slides.map((slide) => (
           <SwiperSlide key={slide.id}>
