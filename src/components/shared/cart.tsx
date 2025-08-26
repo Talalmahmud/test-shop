@@ -7,8 +7,10 @@ import {
   SheetTitle,
   SheetDescription,
   SheetTrigger,
+  SheetFooter,
+  SheetClose,
 } from "@/components/ui/sheet";
-import { Minus, Plus, X } from "lucide-react";
+import { ArrowLeft, Minus, Plus, X } from "lucide-react";
 
 // Define product type
 interface CartItem {
@@ -33,6 +35,22 @@ const Cart = () => {
     },
     {
       id: 2,
+      name: "AO Curve-Hem Tee",
+      variant: "Cadet Blue / S",
+      price: 4300,
+      originalPrice: 7300,
+      quantity: 2,
+    },
+    {
+      id: 3,
+      name: "AO Jogger",
+      variant: "Black / XS",
+      price: 11100,
+      originalPrice: 15800,
+      quantity: 1,
+    },
+    {
+      id: 4,
       name: "AO Curve-Hem Tee",
       variant: "Cadet Blue / S",
       price: 4300,
@@ -66,23 +84,27 @@ const Cart = () => {
         <SheetTrigger className="h-8 px-4 font-bold text-[14px] bg-gray-200 rounded-full flex justify-center items-center">
           Cart ({cartItems.length})
         </SheetTrigger>
-        <SheetContent className="px-4">
-          <SheetHeader className="mb-6">
-           <SheetTitle className=" flex justify-between items-center font-bold">
-              {" "}
-              <div>  &larr;</div>
-              <button className="text-blue-600 text-[24px]  flex items-center text-sm font-medium">
-                Back to Shopping
-              </button>
-              <div className=" flex justify-center items-center gap-1  text-[14px] px-3 h-10 rounded-full bg-black text-white">
-                ({cartItems.length}){" "}
-                <div className=" bg-white h-4 w-4 rounded-full"></div>
+        <SheetContent className="px-4 ">
+          <SheetHeader className="mb-6 ">
+            <SheetTitle className="flex justify-between items-center font-bold ">
+              {/* Back button (using SheetClose) */}
+              <SheetClose asChild>
+                <button className="flex items-center text-blue-600 text-[24px] font-medium hover:underline">
+                  <ArrowLeft className="mr-2" />
+                  Back to Shopping
+                </button>
+              </SheetClose>
+
+              {/* Cart count */}
+              <div className="flex justify-center items-center gap-1 text-[14px] px-3 h-10 rounded-full bg-black text-white">
+                ({cartItems.length})
+                <div className="bg-white h-4 w-4 rounded-full"></div>
               </div>
             </SheetTitle>
             <SheetDescription className="text-base"></SheetDescription>
           </SheetHeader>
 
-          <div className="flex flex-col h-[400px] overflow-y-auto">
+          <div className="flex flex-col  overflow-y-auto">
             <div className="flex-1 overflow-y-auto">
               {/* Back to Shopping link */}
 
@@ -145,7 +167,7 @@ const Cart = () => {
               </div>
 
               {/* VIP Membership Banner */}
-              <div className="mt-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+              {/* <div className="mt-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
                 <h4 className="font-bold text-lg mb-2">
                   Join our VIP Membership
                 </h4>
@@ -170,10 +192,13 @@ const Cart = () => {
                 <button className="w-full bg-black text-white py-2 rounded-md text-sm font-medium">
                   Add To Cart
                 </button>
-              </div>
+              </div> */}
             </div>
 
             {/* Order Summary */}
+          </div>
+          <SheetFooter>
+            {" "}
             <div className="border-t pt-4 mt-4">
               <div className="flex justify-between text-lg font-bold mb-2">
                 <span>Total</span>
@@ -186,7 +211,7 @@ const Cart = () => {
                 Checkout
               </button>
             </div>
-          </div>
+          </SheetFooter>
         </SheetContent>
       </Sheet>
     </>
