@@ -33,7 +33,8 @@ const Category = () => {
   return (
     <div className=" grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
       {categories.map((category) => (
-        <div
+        <Link
+          href={"/search/uygu"}
           key={category.id}
           className="relative w-full h-[500px] rounded-xl overflow-hidden group cursor-pointer"
         >
@@ -43,13 +44,10 @@ const Category = () => {
             fill
             className="object-cover group-hover:scale-105 transition-transform duration-300"
           />
-          <Link
-            href={"/"}
-            className="text-white text-[16px] font-semibold absolute bottom-4 flex items-center justify-center w-full underline"
-          >
+          <p className="text-white text-[16px] font-semibold absolute bottom-4 flex items-center justify-center w-full underline">
             {category.title}
-          </Link>
-        </div>
+          </p>
+        </Link>
       ))}
     </div>
   );

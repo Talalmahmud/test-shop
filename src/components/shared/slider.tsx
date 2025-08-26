@@ -80,11 +80,12 @@ const ProductSlider = ({ slides, className }: Props) => {
         slidesPerView={"auto"} // Allows flexible number of slides based on container width
         centeredSlides={false}
         grabCursor={true}
+        
         onSwiper={setSwiperInstance}
         className="!overflow-visible" // Important to make slides visible outside container
       >
         {slides.map((slide) => (
-          <SwiperSlide key={slide.id} className="!w-[400px]">
+          <SwiperSlide key={slide.id} className="!w-[300px]">
             {" "}
             {/* Fixed width for consistent sizing */}
             <ProductCard {...slide} />

@@ -34,7 +34,7 @@ export default function ProductCard({
   href = "/product/8",
 }: ProductCardProps) {
   return (
-    <Card className="group relative w-[380px] rounded-2xl shadow-sm hover:shadow-md transition duration-300">
+    <div className="group relative w-full sm:w-[300px] pb-2 shadow-sm hover:shadow-md transition duration-300">
       {/* Tag Badge */}
       {tag && (
         <span className="absolute z-20 top-2 right-2 bg-green-500 text-white text-xs px-2 py-1 rounded-md">
@@ -45,14 +45,22 @@ export default function ProductCard({
       <Link href={href}>
         <CardContent className="flex flex-col w-full items-center ">
           {/* Image Wrapper */}
-          <div className="relative w-full h-[400px] overflow-hidden rounded-xl bg-gray-50">
+          <div className=" group relative w-[300px] h-[350px] overflow-hidden bg-gray-50">
             <Image
               src={image}
               alt={title}
               fill
-              className="object-contain transition-transform duration-300 group-hover:scale-105"
-              sizes="(max-width: 768px) 100vw, 400px"
+              className="object-fill transition-transform duration-300 group-hover:scale-105"
             />
+            <div className=" hidden group-hover:grid absolute bottom-0 w-full  grid-cols-5  bg-gray-500 text-white">
+              <p className=" text-center hover:bg-white hover:text-black">sm</p>
+              <p className=" text-center hover:bg-white hover:text-black">md</p>
+              <p className=" text-center hover:bg-white hover:text-black">lg</p>
+              <p className=" text-center hover:bg-white hover:text-black">xl</p>
+              <p className=" text-center hover:bg-white hover:text-black">
+                xxl
+              </p>
+            </div>
           </div>
 
           {/* Title */}
@@ -103,6 +111,6 @@ export default function ProductCard({
           )}
         </CardContent>
       </Link>
-    </Card>
+    </div>
   );
 }
