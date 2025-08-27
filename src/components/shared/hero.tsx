@@ -23,7 +23,11 @@ interface Slide {
   button2Link: string;
 }
 
-const Hero = () => {
+type Props = {
+  photos: { photo: string }[];
+};
+
+const Hero = ({ photos }: Props) => {
   const prevRef = useRef<HTMLButtonElement>(null);
   const nextRef = useRef<HTMLButtonElement>(null);
   const [swiperInstance, setSwiperInstance] = useState<SwiperType | null>(null);
@@ -85,17 +89,17 @@ const Hero = () => {
         className="h-[700px] w-full"
         onSwiper={setSwiperInstance}
       >
-        {slides.map((slide) => (
-          <SwiperSlide key={slide.id}>
+        {photos.map((slide, index: number) => (
+          <SwiperSlide key={index}>
             <div
               className="h-full w-full bg-cover bg-no-repeat bg-center"
-              style={{ backgroundImage: `url(${slide.image})` }}
+              style={{ backgroundImage: `url(${slide.photo})` }}
             />
             {/* Overlay */}
-            <div className="absolute inset-0 bg-black/30" />
+            {/* <div className="absolute inset-0 bg-black/30" /> */}
 
             {/* Content */}
-            <div className="absolute inset-0 z-10 flex flex-col items-center justify-center text-center text-white">
+            {/* <div className="absolute inset-0 z-10 flex flex-col items-center justify-center text-center text-white">
               <div className="max-w-3xl space-y-6 px-4">
                 <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold">
                   {slide.title}
@@ -104,25 +108,9 @@ const Hero = () => {
                   {slide.description}
                 </p>
               </div>
-            </div>
+            </div> */}
 
             {/* Bottom Navigation */}
-            <div className="absolute bottom-12 left-1/2 z-10 flex -translate-x-1/2 transform flex-col items-center space-y-6">
-              {/* Buttons */}
-              <div className="flex flex-col sm:flex-row gap-4">
-                <Button className="bg-white text-black hover:bg-gray-100 px-6 py-3 rounded-full font-medium">
-                  <ShoppingBag className="mr-2 h-4 w-4" />
-                  {slide.button1Text}
-                </Button>
-                <Button
-                  variant="outline"
-                  className="bg-transparent text-white border-white hover:bg-white/10 px-6 py-3 rounded-full font-medium"
-                >
-                  <Play className="mr-2 h-4 w-4" />
-                  {slide.button2Text}
-                </Button>
-              </div>
-            </div>
           </SwiperSlide>
         ))}
       </Swiper>

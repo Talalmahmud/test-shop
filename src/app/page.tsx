@@ -1,6 +1,7 @@
 import Category from "@/components/shared/category";
 import Hero from "@/components/shared/hero";
 import ProductSlider from "@/components/shared/slider";
+import ProductSlider2 from "@/components/shared/slider2";
 import TrendCollection from "@/components/shared/trend-collection";
 
 import { Button } from "@/components/ui/button";
@@ -112,11 +113,33 @@ const products = [
     colorOptions: ["#cccccc", "#000000", "#374151"],
   },
 ];
+type Category = {
+  id: number;
+  name: string;
+  categories: {
+    id: number;
+    name: string;
+    categories: {
+      id: number;
+      name: string;
+    }[];
+  }[];
+};
 
-export default function Home() {
+export default async function Home() {
+  const fetchHero = await fetch(
+    `${process.env.NEXT_PUBLIC_BASE_URL}/elevatedbd-main/public/api/v2/sliders`
+  ).then((res) => res.json());
+
+  const bestSelling = await fetch(
+    `${process.env.NEXT_PUBLIC_BASE_URL}/elevatedbd-main/public/api/v2/products/best-selling`
+  ).then((res) => res.json());
+
+  console.log(bestSelling);
+
   return (
     <div>
-      <Hero />
+      <Hero photos={fetchHero.data} />
 
       <div className="py-10 px-6 lg:px-20">
         <h2 className="text-[40px] font-serif ">Shop Best Sellers</h2>
@@ -124,7 +147,7 @@ export default function Home() {
           <Button className=" rounded-full">men</Button>{" "}
           <Button className=" rounded-full">women</Button>
         </div>
-        <ProductSlider slides={products} />
+        <ProductSlider2 slides={bestSelling.data.products} />
       </div>
 
       <div className="py-10 px-6 lg:px-20">

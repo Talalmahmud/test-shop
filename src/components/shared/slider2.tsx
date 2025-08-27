@@ -6,25 +6,37 @@ import type { Swiper as SwiperType } from "swiper";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import ProductCard from "./product-card";
 
 // Import Swiper styles
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
+import ProductCard2 from "./product-card-2";
 
 interface Slide {
   id: string | number;
-  image: string;
-  title: string;
-  colorOptions?: string[];
-  reviews: number;
+  name: string;
+  slug: string;
+  thumbnail: string;
+  base_price: string;
+  discounted_price: string;
+  discount_percentage: number;
   rating: number;
-  originalPrice: number;
-  discountedPrice: number;
-  entries: number;
+  rating_stars: {
+    rating: number;
+    full_stars: number;
+    half_star: number;
+    empty_stars: number;
+    stars_html: string;
+  };
+  wholesale_product: number;
+  auction_product: number;
+  num_of_sale: number;
+  club_point: string | null;
+  // Optional fields that might not be present in all items
+  colorOptions?: string[];
+  entries?: number;
   tag?: string;
-  href?: string;
 }
 
 type Props = {
@@ -32,7 +44,7 @@ type Props = {
   className?: string;
 };
 
-const ProductSlider = ({ slides, className }: Props) => {
+const ProductSlider2 = ({ slides, className }: Props) => {
   const prevRef = useRef<HTMLButtonElement>(null);
   const nextRef = useRef<HTMLButtonElement>(null);
   const [swiperInstance, setSwiperInstance] = useState<SwiperType | null>(null);
@@ -80,7 +92,6 @@ const ProductSlider = ({ slides, className }: Props) => {
         slidesPerView={"auto"} // Allows flexible number of slides based on container width
         centeredSlides={false}
         grabCursor={true}
-        
         onSwiper={setSwiperInstance}
         className="!overflow-visible" // Important to make slides visible outside container
       >
@@ -88,7 +99,7 @@ const ProductSlider = ({ slides, className }: Props) => {
           <SwiperSlide key={slide.id} className="!w-[300px]">
             {" "}
             {/* Fixed width for consistent sizing */}
-            <ProductCard className="w-full sm:w-[300px]" item={slide} />
+            <ProductCard2 className="w-full sm:w-[300px]" item={slide} />
           </SwiperSlide>
         ))}
       </Swiper>
@@ -125,4 +136,4 @@ const ProductSlider = ({ slides, className }: Props) => {
   );
 };
 
-export default ProductSlider;
+export default ProductSlider2;

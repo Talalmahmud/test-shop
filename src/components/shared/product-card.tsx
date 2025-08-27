@@ -4,51 +4,46 @@ import Image from "next/image";
 import Link from "next/link";
 import { Star } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Card, CardContent } from "../ui/card";
+import { CardContent } from "../ui/card";
 
 type ProductCardProps = {
-  id: string | number;
-  image: string;
-  title: string;
-  colorOptions?: string[];
-  reviews: number;
-  rating: number; // out of 5
-  originalPrice: number;
-  discountedPrice: number;
-  entries: number;
-  tag?: string; // e.g. "Best Seller" or "1x Entries"
-  href?: string;
+  item: {
+    id: string | number;
+    image: string;
+    title: string;
+    colorOptions?: string[];
+    reviews: number;
+    rating: number; // out of 5
+    originalPrice: number;
+    discountedPrice: number;
+    entries: number;
+    tag?: string; // e.g. "Best Seller" or "1x Entries"
+    href?: string;
+  };
+  className: string;
 };
 
-export default function ProductCard({
-  id,
-  image,
-  title,
-  colorOptions = [],
-  reviews,
-  rating,
-  originalPrice,
-  discountedPrice,
-  entries,
-  tag,
-  href = "/product/8",
-}: ProductCardProps) {
+export default function ProductCard({ item, className }: ProductCardProps) {
   return (
-    <div className="group relative w-full sm:w-[300px] pb-2 shadow-sm hover:shadow-md transition duration-300">
+    <div
+      className={`group relative  pb-2 shadow-sm hover:shadow-md transition duration-300 ${className}`}
+    >
       {/* Tag Badge */}
-      {tag && (
+      {item?.tag && (
         <span className="absolute z-20 top-2 right-2 bg-green-500 text-white text-xs px-2 py-1 rounded-md">
-          {tag}
+          {item?.tag}
         </span>
       )}
 
-      <Link href={href}>
+      <Link href={item?.href || ""}>
         <CardContent className="flex flex-col w-full items-center ">
           {/* Image Wrapper */}
-          <div className=" group relative w-[300px] h-[350px] overflow-hidden bg-gray-50">
+          <div
+            className={` group relative  h-[350px] overflow-hidden bg-gray-50 ${className}`}
+          >
             <Image
-              src={image}
-              alt={title}
+              src={item?.image}
+              alt={item?.title}
               fill
               className="object-fill transition-transform duration-300 group-hover:scale-105"
             />
@@ -65,7 +60,7 @@ export default function ProductCard({
 
           {/* Title */}
           <h3 className="mt-3 text-base font-semibold text-center line-clamp-2">
-            {title}
+            {item?.title}
           </h3>
 
           {/* Rating */}
@@ -75,32 +70,34 @@ export default function ProductCard({
                 key={i}
                 size={16}
                 className={cn(
-                  i < rating
+                  i < item?.rating
                     ? "fill-yellow-500 stroke-yellow-500"
                     : "fill-gray-200 stroke-gray-400"
                 )}
               />
             ))}
-            <span className="ml-1 text-sm text-gray-500">({reviews})</span>
+            <span className="ml-1 text-sm text-gray-500">
+              ({item?.reviews})
+            </span>
           </div>
 
           {/* Price */}
           <div className="mt-2 flex flex-col items-center">
             <span className="text-red-600 font-semibold text-lg">
-              BDT {discountedPrice.toLocaleString()}
+              BDT {item?.discountedPrice.toLocaleString()}
             </span>
             <span className="line-through text-gray-400 text-sm">
-              BDT {originalPrice.toLocaleString()}
+              BDT {item?.originalPrice.toLocaleString()}
             </span>
             <span className="text-xs text-red-500 mt-1">
-              Earn {entries} entries
+              Earn {item?.entries} entries
             </span>
           </div>
 
           {/* Color Options */}
-          {colorOptions.length > 0 && (
+          {item?.colorOptions && item?.colorOptions.length > 0 && (
             <div className="flex gap-2 mt-3">
-              {colorOptions.map((color, i) => (
+              {item?.colorOptions.map((color, i) => (
                 <span
                   key={i}
                   className="w-5 h-5 rounded-full border shadow-sm"

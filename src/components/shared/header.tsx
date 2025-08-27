@@ -7,6 +7,7 @@ import {
   NavigationMenu,
   NavigationMenuContent,
   NavigationMenuItem,
+  NavigationMenuLink,
   NavigationMenuList,
   NavigationMenuTrigger,
 } from "../ui/navigation-menu";
@@ -20,224 +21,90 @@ const linkList = [
   { name: "Contact", href: "#" },
 ];
 
-const Header = () => {
+type Category = {
+  id: number;
+  name: string;
+  categories: {
+    id: number;
+    name: string;
+    categories: {
+      id: number;
+      name: string;
+    }[];
+  }[];
+};
+
+const Header = async () => {
+  const listData = await fetch(
+    "http://192.168.50.3/elevatedbd-main/public/api/v2/categories/navigation"
+  ).then((res) => res.json());
+  const processData = listData.map((item: Category) => ({
+    id: item.id,
+    name: item.name,
+    categories: item.categories.map((subItem) => ({
+      id: subItem.id,
+      name: subItem.name,
+      categories: subItem.categories.map((subSubItem) => ({
+        id: subSubItem.id,
+        name: subSubItem.name,
+      })),
+    })),
+  }));
+
   return (
     <div className="bg-white flex items-center justify-between w-screem  border-b-[1px] border-slate-300 py-4 top-0 left-0 sticky z-50 ">
-      <MobileMenu />
-      <NavigationMenu className=" hidden md:block px-6">
+      <MobileMenu categories={processData} />
+
+      <NavigationMenu className="hidden md:flex mx-4 text-black">
         <NavigationMenuList>
-          <NavigationMenuItem>
-            <NavigationMenuTrigger className=" [&>svg]:hidden">
-              Men
-            </NavigationMenuTrigger>
-            <NavigationMenuContent className=" w-full">
-              <div className="w-screen bg-white p-6 shadow-lg">
-                {/* Your menu content here */}
-                <div className="">
+          {processData.map((category: Category) => (
+            <NavigationMenuItem key={category.id}>
+              <NavigationMenuTrigger className="[&>svg]:hidden bg-transparent hover:bg-gray-100 px-4 py-2">
+                {category.name}
+              </NavigationMenuTrigger>
+              <NavigationMenuContent>
+                <div className="w-[600px] bg-white p-6 shadow-lg rounded-md">
                   <h2 className="text-2xl font-bold mb-4">
-                    Men&apos;s Collection
+                    {category.name} Collection
                   </h2>
-                  <div className="grid grid-cols-4 gap-6">
-                    <div>
-                      <h3 className="font-semibold mb-3">Clothing</h3>
-                      <ul className="space-y-2">
-                        <li>
-                          <a href="#" className="hover:text-blue-600">
-                            T-Shirts
-                          </a>
-                        </li>
-                        <li>
-                          <a href="#" className="hover:text-blue-600">
-                            Shirts
-                          </a>
-                        </li>
-                        <li>
-                          <a href="#" className="hover:text-blue-600">
-                            Jeans
-                          </a>
-                        </li>
-                        <li>
-                          <a href="#" className="hover:text-blue-600">
-                            Pants
-                          </a>
-                        </li>
-                        <li>
-                          <a href="#" className="hover:text-blue-600">
-                            Jackets
-                          </a>
-                        </li>
-                      </ul>
-                    </div>
-                    <div>
-                      <h3 className="font-semibold mb-3">Footwear</h3>
-                      <ul className="space-y-2">
-                        <li>
-                          <a href="#" className="hover:text-blue-600">
-                            Sneakers
-                          </a>
-                        </li>
-                        <li>
-                          <a href="#" className="hover:text-blue-600">
-                            Formal Shoes
-                          </a>
-                        </li>
-                        <li>
-                          <a href="#" className="hover:text-blue-600">
-                            Sandals
-                          </a>
-                        </li>
-                        <li>
-                          <a href="#" className="hover:text-blue-600">
-                            Boots
-                          </a>
-                        </li>
-                      </ul>
-                    </div>
-                    <div>
-                      <h3 className="font-semibold mb-3">Accessories</h3>
-                      <ul className="space-y-2">
-                        <li>
-                          <a href="#" className="hover:text-blue-600">
-                            Watches
-                          </a>
-                        </li>
-                        <li>
-                          <a href="#" className="hover:text-blue-600">
-                            Bags
-                          </a>
-                        </li>
-                        <li>
-                          <a href="#" className="hover:text-blue-600">
-                            Belts
-                          </a>
-                        </li>
-                        <li>
-                          <a href="#" className="hover:text-blue-600">
-                            Sunglasses
-                          </a>
-                        </li>
-                      </ul>
-                    </div>
-                    {/* <div>
-                      <h3 className="font-semibold mb-3">Featured</h3>
-                      <div className="bg-gray-100 rounded-lg p-4">
-                        <p className="text-sm mb-2">New Arrivals</p>
-                        <button className="bg-black text-white px-4 py-2 rounded text-sm">
-                          Shop Now
-                        </button>
+                  <div className="grid grid-cols-2 gap-6">
+                    {category.categories.map((subCategory) => (
+                      <div key={subCategory.id}>
+                        <h3 className="font-semibold mb-3 text-gray-800 border-b pb-1">
+                          <Link
+                            href={`/category/${subCategory.id}`}
+                            className="hover:text-blue-600"
+                          >
+                            {subCategory.name}
+                          </Link>
+                        </h3>
+                        <ul className="space-y-2">
+                          {subCategory.categories.map((subSubCategory) => (
+                            <li key={subSubCategory.id}>
+                              <Link
+                                href={`/category/${subSubCategory.id}`}
+                                className="text-gray-600 hover:text-blue-600 block py-1"
+                              >
+                                {subSubCategory.name}
+                              </Link>
+                            </li>
+                          ))}
+                        </ul>
                       </div>
-                    </div> */}
+                    ))}
+                  </div>
+                  <div className="mt-6 pt-4 border-t">
+                    <Link
+                      href={`/category/${category.id}`}
+                      className="text-blue-600 hover:text-blue-800 font-medium"
+                    >
+                      View All {category.name}
+                    </Link>
                   </div>
                 </div>
-              </div>
-            </NavigationMenuContent>
-          </NavigationMenuItem>
-          <NavigationMenuItem>
-            <NavigationMenuTrigger className=" [&>svg]:hidden">
-              Women
-            </NavigationMenuTrigger>
-            <NavigationMenuContent className="absolute left-0 w-screen">
-              <div className="w-screen bg-white p-6 shadow-lg">
-                {/* Your menu content here */}
-                <div className="container mx-auto">
-                  <h2 className="text-2xl font-bold mb-4">
-                    Women&apos;s Collection
-                  </h2>
-                  <div className="grid grid-cols-4 gap-6">
-                    <div>
-                      <h3 className="font-semibold mb-3">Clothing</h3>
-                      <ul className="space-y-2">
-                        <li>
-                          <a href="#" className="hover:text-blue-600">
-                            T-Shirts
-                          </a>
-                        </li>
-                        <li>
-                          <a href="#" className="hover:text-blue-600">
-                            Shirts
-                          </a>
-                        </li>
-                        <li>
-                          <a href="#" className="hover:text-blue-600">
-                            Jeans
-                          </a>
-                        </li>
-                        <li>
-                          <a href="#" className="hover:text-blue-600">
-                            Pants
-                          </a>
-                        </li>
-                        <li>
-                          <a href="#" className="hover:text-blue-600">
-                            Jackets
-                          </a>
-                        </li>
-                      </ul>
-                    </div>
-                    <div>
-                      <h3 className="font-semibold mb-3">Footwear</h3>
-                      <ul className="space-y-2">
-                        <li>
-                          <a href="#" className="hover:text-blue-600">
-                            Sneakers
-                          </a>
-                        </li>
-                        <li>
-                          <a href="#" className="hover:text-blue-600">
-                            Formal Shoes
-                          </a>
-                        </li>
-                        <li>
-                          <a href="#" className="hover:text-blue-600">
-                            Sandals
-                          </a>
-                        </li>
-                        <li>
-                          <a href="#" className="hover:text-blue-600">
-                            Boots
-                          </a>
-                        </li>
-                      </ul>
-                    </div>
-                    <div>
-                      <h3 className="font-semibold mb-3">Accessories</h3>
-                      <ul className="space-y-2">
-                        <li>
-                          <a href="#" className="hover:text-blue-600">
-                            Watches
-                          </a>
-                        </li>
-                        <li>
-                          <a href="#" className="hover:text-blue-600">
-                            Bags
-                          </a>
-                        </li>
-                        <li>
-                          <a href="#" className="hover:text-blue-600">
-                            Belts
-                          </a>
-                        </li>
-                        <li>
-                          <a href="#" className="hover:text-blue-600">
-                            Sunglasses
-                          </a>
-                        </li>
-                      </ul>
-                    </div>
-                    {/* <div>
-                      <h3 className="font-semibold mb-3">Featured</h3>
-                      <div className="bg-gray-100 rounded-lg p-4">
-                        <p className="text-sm mb-2">New Arrivals</p>
-                        <button className="bg-black text-white px-4 py-2 rounded text-sm">
-                          Shop Now
-                        </button>
-                      </div>
-                    </div> */}
-                  </div>
-                </div>
-              </div>
-            </NavigationMenuContent>
-          </NavigationMenuItem>
+              </NavigationMenuContent>
+            </NavigationMenuItem>
+          ))}
         </NavigationMenuList>
       </NavigationMenu>
 

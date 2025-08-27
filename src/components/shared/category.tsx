@@ -1,6 +1,8 @@
+"use client";
+import api from "@/services/axios";
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
+import React, { useEffect } from "react";
 
 const categories = [
   {
@@ -30,6 +32,21 @@ const categories = [
 ];
 
 const Category = () => {
+
+  const fetchCategory = async () => {
+    try {
+      const res = await api.get(
+        "/elevatedbd-main/public/api/v2/categories/navigation"
+      );
+      console.log(res);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    fetchCategory();
+  }, []);
   return (
     <div className=" grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
       {categories.map((category) => (

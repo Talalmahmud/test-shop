@@ -3,7 +3,7 @@ import Filter from "@/components/shared/filter";
 import ProductCard from "@/components/shared/product-card";
 import Image from "next/image";
 
-import React, { useState } from "react";
+import React from "react";
 const products = [
   {
     id: 1,
@@ -135,15 +135,19 @@ const Page = () => {
         </div>
 
         {/* right */}
-        <div className="px-6 py-4 ">
+        <div className="px-6 py-4 w-full ">
           {" "}
           <div className="pb-2">
             {" "}
             <Filter />
           </div>
-          <div className=" grid grid-cols-3 gap-4">
+          <div className=" grid grid-cols-4 w-full gap-4">
             {products.map((product) => (
-              <ProductCard key={product.id} {...product} />
+              <ProductCard
+                className="w-full "
+                key={product.id}
+                item={product}
+              />
             ))}
           </div>
         </div>
