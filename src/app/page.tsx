@@ -1,4 +1,3 @@
-import Category from "@/components/shared/category";
 import Hero from "@/components/shared/hero";
 import ProductSlider from "@/components/shared/slider";
 import ProductSlider2 from "@/components/shared/slider2";
@@ -6,6 +5,7 @@ import TrendCollection from "@/components/shared/trend-collection";
 
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
+import Link from "next/link";
 
 const products = [
   {
@@ -116,6 +116,7 @@ const products = [
 type Category = {
   id: number;
   name: string;
+  thumbnail?: string;
   categories: {
     id: number;
     name: string;
@@ -132,11 +133,27 @@ export default async function Home() {
   ).then((res) => res.json());
 
   const bestSelling = await fetch(
-    `${process.env.NEXT_PUBLIC_BASE_URL}/elevatedbd-main/public/api/v2/products/best-selling`
+    `${process.env.NEXT_PUBLIC_BASE_URL}/elevatedbd-main/public/api/v2/products-list/best-selling`
   ).then((res) => res.json());
-
   console.log(bestSelling);
 
+  const listData = await fetch(
+    "http://192.168.50.3/elevatedbd-main/public/api/v2/categories/navigation"
+  ).then((res) => res.json());
+  const processData = listData.map((item: Category) => ({
+    id: item.id,
+    name: item.name,
+    thumbnail: item.thumbnail,
+  }));
+  const processData2 = [...processData];
+
+  const cols = 4;
+
+  // group items into rows of max 4
+  const rows = [];
+  for (let i = 0; i < processData2.length; i += cols) {
+    rows.push(processData2.slice(i, i + cols));
+  }
   return (
     <div>
       <Hero photos={fetchHero.data} />
@@ -161,8 +178,43 @@ export default async function Home() {
 
       <div className="py-10 px-6 lg:px-7">
         <h2 className="text-[40px] font-serif ">Shop by Category</h2>
-        <div className=" h-[1px] w-full bg-slate-300 my-2"></div>
-        <Category />
+        <div className="h-[1px] w-full bg-slate-300 my-2"></div>
+        <div className="space-y-6">
+          {rows.map((row, rowIndex) => {
+            const count = row.length;
+            let basisClass = "basis-1/4"; // default for 4 items
+
+            if (count === 1) basisClass = "basis-full";
+            if (count === 2) basisClass = "basis-1/2";
+            if (count === 3) basisClass = "basis-1/3";
+
+            return (
+              <div key={rowIndex} className="flex gap-6">
+                {row.map((category: Category) => (
+                  <Link
+                    href={`/category/${category.id}`}
+                    key={category.id}
+                    className={`relative h-[400px] rounded-xl overflow-hidden group cursor-pointer ${basisClass}`}
+                  >
+                    <Image
+                      src={
+                        category.thumbnail ||
+                        "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=900&auto=format&fit=crop&q=60"
+                      }
+                      alt={category.name}
+                      fill
+                      className="object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                    <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-colors duration-300"></div>
+                    <p className="text-white text-[16px] font-semibold absolute bottom-4 text-center w-full underline">
+                      {category.name}
+                    </p>
+                  </Link>
+                ))}
+              </div>
+            );
+          })}
+        </div>
       </div>
 
       <div className="py-10 px-6 lg:px-7">

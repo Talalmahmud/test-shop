@@ -1,5 +1,3 @@
-"use client";
-
 import Image from "next/image";
 import { Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -28,21 +26,34 @@ const product = {
   images: ["/hoodie-blue.png", "/hoodie-model.png"],
 };
 
-export default function ProductDetailsPage() {
+export default async function page({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await params;
+  const product1 = await fetch(
+    `${process.env.NEXT_PUBLIC_BASE_URL}/elevatedbd-main/public/api/v2/products/${id}`
+  ).then((res) => res.json());
+  const productImage = [
+    product1.data?.thumbnail,
+    ...product1.data?.gallery.map((img: { original: string }) => img.original),
+  ];
   return (
     <section className="container mx-auto py-10 grid grid-cols-1 lg:grid-cols-3 gap-10">
       {/* Left - Images */}
       <div className="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
-        {product.images.map((img, i) => (
+        {productImage.map((img, i) => (
           <div
             key={i}
             className="relative w-full h-[450px] rounded-xl overflow-hidden bg-gray-100"
           >
             <Image
               src={img}
-              alt={product.title}
-              fill
-              className="object-cover"
+              alt={img}
+              height={200}
+              width={600}
+              className="object-cover w-full h-full"
             />
           </div>
         ))}
@@ -82,24 +93,13 @@ export default function ProductDetailsPage() {
 
         {/* Colors */}
         <div className="mt-5">
-          <p className="font-medium">Staple Colors</p>
+          <p className="font-medium"> Colors</p>
           <div className="flex gap-2 mt-2">
-            {product.stapleColors.map((color, i) => (
+            {product1.data.colors.map((color: { code: string }, i: number) => (
               <span
                 key={i}
                 className="w-7 h-7 rounded-full border cursor-pointer"
-                style={{ backgroundColor: color }}
-              />
-            ))}
-          </div>
-
-          <p className="mt-4 font-medium">Seasonal Colors</p>
-          <div className="flex gap-2 mt-2">
-            {product.seasonalColors.map((color, i) => (
-              <span
-                key={i}
-                className="w-7 h-7 rounded-full border cursor-pointer"
-                style={{ backgroundColor: color }}
+                style={{ backgroundColor: color.code }}
               />
             ))}
           </div>

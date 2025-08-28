@@ -22,10 +22,10 @@ import Image from "next/image";
 type CategoryItem = {
   id: number;
   name: string;
-  categories: {
+  children: {
     id: number;
     name: string;
-    categories: {
+    children: {
       id: number;
       name: string;
     }[];
@@ -62,7 +62,7 @@ const MobileMenu = ({ categories }: MobileMenuProps) => {
                 </AccordionTrigger>
                 <AccordionContent>
                   <div className="pl-4 border-l border-gray-200 ml-2">
-                    {category.categories.map((subCategory) => (
+                    {category.children.map((subCategory) => (
                       <div key={subCategory.id} className="mb-4 last:mb-0">
                         <SheetClose asChild>
                           <Link
@@ -73,10 +73,10 @@ const MobileMenu = ({ categories }: MobileMenuProps) => {
                           </Link>
                         </SheetClose>
 
-                        {subCategory.categories &&
-                          subCategory.categories.length > 0 && (
+                        {subCategory.children &&
+                          subCategory.children.length > 0 && (
                             <div className="pl-4 mt-2">
-                              {subCategory.categories.map((subSubCategory) => (
+                              {subCategory.children.map((subSubCategory) => (
                                 <SheetClose key={subSubCategory.id} asChild>
                                   <Link
                                     href={`/category/${subSubCategory.id}`}

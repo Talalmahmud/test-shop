@@ -39,11 +39,25 @@ export default function ProductCard2({
   item,
   className = "",
 }: ProductCardProps) {
+  console.log(item);
   // Extract numeric values from price strings (remove currency symbol)
   const basePriceNum = parseInt(item.base_price.replace(/[^\d]/g, "") || "0");
   const discountedPriceNum = parseInt(
     item.discounted_price.replace(/[^\d]/g, "") || "0"
   );
+
+  function replaceBaseUrl(
+    imageUrl: string,
+    oldBase = "http://localhost",
+    newBase = "http://192.168.50.3"
+  ) {
+    // If newBase doesn't start with http://, add it
+    if (!newBase.startsWith("http://") && !newBase.startsWith("https://")) {
+      newBase = "http://" + newBase;
+    }
+
+    return imageUrl.replace(oldBase, newBase);
+  }
 
   // Calculate discount percentage if not provided
   const discountPercentage =
@@ -66,17 +80,17 @@ export default function ProductCard2({
 
       {/* Custom Tag Badge */}
       {item?.tag && (
-        <span className="absolute z-20 top-2 right-2 bg-green-500 text-white text-xs px-2 py-1 rounded-md">
+        <span className="absloute z-20 top-2 right-2 bg-green-500 text-white text-xs px-2 py-1 rounded-md">
           {item.tag}
         </span>
       )}
 
-      <Link href={`/products/${item.slug}`}>
+      <Link href={`/product/${item.slug}`}>
         <CardContent className="flex flex-col w-full items-center p-0">
           {/* Image Wrapper */}
           <div className="group relative h-[250px] w-full overflow-hidden bg-gray-50">
             <Image
-              src={item.thumbnail || "/placeholder-image.jpg"}
+              src={replaceBaseUrl(item.thumbnail) || "/placeholder-image.jpg"}
               alt={item.name}
               fill
               className="object-cover transition-transform duration-300 group-hover:scale-105"
@@ -133,15 +147,15 @@ export default function ProductCard2({
               {discountedPriceNum < basePriceNum ? (
                 <>
                   <span className="text-red-600 font-semibold text-lg">
-                    ৳{discountedPriceNum.toLocaleString()}
+                    BDT {discountedPriceNum.toLocaleString()}
                   </span>
                   <span className="line-through text-gray-400 text-sm">
-                    ৳{basePriceNum.toLocaleString()}
+                    BDT {basePriceNum.toLocaleString()}
                   </span>
                 </>
               ) : (
-                <span className="text-gray-800 font-semibold text-lg">
-                  ৳{basePriceNum.toLocaleString()}
+                <span className="text-red-500 font-semibold text-lg">
+                  BDT {basePriceNum.toLocaleString()}
                 </span>
               )}
             </div>

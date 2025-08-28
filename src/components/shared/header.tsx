@@ -24,10 +24,10 @@ const linkList = [
 type Category = {
   id: number;
   name: string;
-  categories: {
+  children: {
     id: number;
     name: string;
-    categories: {
+    children: {
       id: number;
       name: string;
     }[];
@@ -41,10 +41,10 @@ const Header = async () => {
   const processData = listData.map((item: Category) => ({
     id: item.id,
     name: item.name,
-    categories: item.categories.map((subItem) => ({
+    children: item.children.map((subItem) => ({
       id: subItem.id,
       name: subItem.name,
-      categories: subItem.categories.map((subSubItem) => ({
+      children: subItem.children.map((subSubItem) => ({
         id: subSubItem.id,
         name: subSubItem.name,
       })),
@@ -68,7 +68,7 @@ const Header = async () => {
                     {category.name} Collection
                   </h2>
                   <div className="grid grid-cols-2 gap-6">
-                    {category.categories.map((subCategory) => (
+                    {category.children.map((subCategory) => (
                       <div key={subCategory.id}>
                         <h3 className="font-semibold mb-3 text-gray-800 border-b pb-1">
                           <Link
@@ -79,7 +79,7 @@ const Header = async () => {
                           </Link>
                         </h3>
                         <ul className="space-y-2">
-                          {subCategory.categories.map((subSubCategory) => (
+                          {subCategory.children.map((subSubCategory) => (
                             <li key={subSubCategory.id}>
                               <Link
                                 href={`/category/${subSubCategory.id}`}
