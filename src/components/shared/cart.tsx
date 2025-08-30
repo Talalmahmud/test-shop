@@ -81,8 +81,9 @@ const Cart = () => {
   return (
     <>
       <Sheet open={isOpen} onOpenChange={setIsOpen}>
-        <SheetTrigger className="h-8 px-4 font-bold text-[14px] bg-gray-200 rounded-full flex justify-center items-center">
-          Cart ({cartItems.length})
+        <SheetTrigger className="h-8 px-4 font-bold text-[14px] bg-gray-200 rounded-full flex justify-center gap-[2px] items-center">
+          <span className=" hidden md:block">Cart</span> ({cartItems.length}){" "}
+          <span className=" block md:hidden h-2 w-2 bg-black rounded-full"></span>
         </SheetTrigger>
         <SheetContent className="px-4 min-w-full sm:min-w-[400px]">
           <SheetHeader className="mb-6 ">

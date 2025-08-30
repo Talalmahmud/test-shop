@@ -129,17 +129,26 @@ type Category = {
 
 export default async function Home() {
   const fetchHero = await fetch(
-    `${process.env.NEXT_PUBLIC_BASE_URL}/elevatedbd-main/public/api/v2/sliders`
+    `${process.env.NEXT_PUBLIC_BASE_URL}/sliders`
   ).then((res) => res.json());
 
   const bestSelling = await fetch(
-    `${process.env.NEXT_PUBLIC_BASE_URL}/elevatedbd-main/public/api/v2/products-list/best-selling`
+    `${process.env.NEXT_PUBLIC_BASE_URL}/products-list/best-selling?limit=30`
   ).then((res) => res.json());
-  console.log(bestSelling);
+
+  const trendingProduct = await fetch(
+    `${process.env.NEXT_PUBLIC_BASE_URL}/products-list/trending?limit=10`
+  ).then((res) => res.json());
+  console.log("trendingProduct", trendingProduct.data.products);
+
+  const newProduct = await fetch(
+    `${process.env.NEXT_PUBLIC_BASE_URL}/products-list/new-arrivals?limit=10`
+  ).then((res) => res.json());
 
   const listData = await fetch(
-    "http://192.168.50.3/elevatedbd-main/public/api/v2/categories/navigation"
+    `${process.env.NEXT_PUBLIC_BASE_URL}/categories/navigation`
   ).then((res) => res.json());
+
   const processData = listData.map((item: Category) => ({
     id: item.id,
     name: item.name,
@@ -154,26 +163,28 @@ export default async function Home() {
   for (let i = 0; i < processData2.length; i += cols) {
     rows.push(processData2.slice(i, i + cols));
   }
+
   return (
     <div>
       <Hero photos={fetchHero.data} />
 
       <div className="py-10 px-6 lg:px-20">
         <h2 className="text-[40px] font-serif ">Shop Best Sellers</h2>
-        <div className=" flex items-center gap-2 py-4">
+        {/* <div className=" flex items-center gap-2 py-4">
           <Button className=" rounded-full">men</Button>{" "}
           <Button className=" rounded-full">women</Button>
-        </div>
+        </div> */}
         <ProductSlider2 slides={bestSelling.data.products} />
       </div>
 
       <div className="py-10 px-6 lg:px-20">
         <h2 className="text-[40px] font-serif ">Shop New Releases</h2>
-        <div className=" flex items-center gap-2 py-4">
+        {/* <div className=" flex items-center gap-2 py-4">
           <Button className=" rounded-full">men</Button>{" "}
           <Button className=" rounded-full">women</Button>
-        </div>
-        <ProductSlider slides={products} />
+        </div> */}
+        {/* <ProductSlider slides={products} /> */}
+        <ProductSlider2 slides={newProduct.data.products} />
       </div>
 
       <div className="py-10 px-6 lg:px-7">
@@ -192,7 +203,7 @@ export default async function Home() {
               <div key={rowIndex} className="flex gap-6">
                 {row.map((category: Category) => (
                   <Link
-                    href={`/category/${category.id}`}
+                    href={`/search/${category.id}`}
                     key={category.id}
                     className={`relative h-[400px] rounded-xl overflow-hidden group cursor-pointer ${basisClass}`}
                   >
@@ -217,9 +228,20 @@ export default async function Home() {
         </div>
       </div>
 
+      {/* <div className="py-10 px-6 lg:px-20">
+        <h2 className="text-[40px] font-serif ">Trending Collections</h2>
+        <div className=" flex items-center gap-2 py-4">
+          <Button className=" rounded-full">men</Button>{" "}
+          <Button className=" rounded-full">women</Button>
+        </div>
+        <ProductSlider slides={products} />
+        <ProductSlider2 slides={trendingProduct.data.products} />
+      </div> */}
+
       <div className="py-10 px-6 lg:px-7">
         <h2 className="text-[40px] font-serif ">Trending Collections</h2>
-        <TrendCollection />
+        {/* <TrendCollection /> */}
+        <ProductSlider2 slides={trendingProduct.data.products} />
       </div>
 
       <div className="py-10 px-6 lg:px-7">

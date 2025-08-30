@@ -38,7 +38,7 @@ interface MobileMenuProps {
 
 const MobileMenu = ({ categories }: MobileMenuProps) => {
   return (
-    <div className="pl-6 block md:hidden">
+    <div className="pl-6 block lg:hidden">
       <Sheet>
         <SheetTrigger>
           <div className="h-8 w-8 bg-gray-200 rounded-full flex justify-center items-center">

@@ -25,7 +25,7 @@ type ProductCardProps = {
     };
     wholesale_product: number;
     auction_product: number;
-    num_of_sale: number;
+    sales_count: number;
     club_point: string | null;
     // Optional fields that might not be present in all items
     colorOptions?: string[];
@@ -39,42 +39,31 @@ export default function ProductCard2({
   item,
   className = "",
 }: ProductCardProps) {
-  console.log(item);
-  // Extract numeric values from price strings (remove currency symbol)
-  const basePriceNum = parseInt(item.base_price.replace(/[^\d]/g, "") || "0");
-  const discountedPriceNum = parseInt(
-    item.discounted_price.replace(/[^\d]/g, "") || "0"
-  );
+  // console.log(item);
 
-  function replaceBaseUrl(
-    imageUrl: string,
-    oldBase = "http://localhost",
-    newBase = "http://192.168.50.3"
-  ) {
-    // If newBase doesn't start with http://, add it
-    if (!newBase.startsWith("http://") && !newBase.startsWith("https://")) {
-      newBase = "http://" + newBase;
-    }
+  // function replaceBaseUrl(
+  //   imageUrl: string,
+  //   oldBase = "http://localhost",
+  //   newBase = "http://192.168.50.3"
+  // ) {
+  //   // If newBase doesn't start with http://, add it
+  //   if (!newBase.startsWith("http://") && !newBase.startsWith("https://")) {
+  //     newBase = "http://" + newBase;
+  //   }
 
-    return imageUrl.replace(oldBase, newBase);
-  }
+  //   return imageUrl.replace(oldBase, newBase);
+  // }
 
   // Calculate discount percentage if not provided
-  const discountPercentage =
-    item.discount_percentage > 0
-      ? item.discount_percentage
-      : basePriceNum > 0
-      ? Math.round(((basePriceNum - discountedPriceNum) / basePriceNum) * 100)
-      : 0;
 
   return (
     <div
       className={`group relative pb-2 shadow-sm hover:shadow-md transition duration-300 ${className}`}
     >
       {/* Discount Badge */}
-      {discountPercentage > 0 && (
+      {item.discount_percentage > 0 && (
         <span className="absolute z-20 top-2 left-2 bg-red-500 text-white text-xs px-2 py-1 rounded-md">
-          {discountPercentage}% OFF
+          {item.discount_percentage}% OFF
         </span>
       )}
 
@@ -90,15 +79,18 @@ export default function ProductCard2({
           {/* Image Wrapper */}
           <div className="group relative h-[250px] w-full overflow-hidden bg-gray-50">
             <Image
-              src={replaceBaseUrl(item.thumbnail) || "/placeholder-image.jpg"}
+              src={item.thumbnail || "/placeholder-image.jpg"}
               alt={item.name}
               fill
               className="object-cover transition-transform duration-300 group-hover:scale-105"
             />
 
             {/* Size options on hover */}
-            <div className="hidden group-hover:grid absolute bottom-0 w-full grid-cols-5 bg-gray-800/90 text-white text-xs">
-              <p className="text-center py-2 hover:bg-white hover:text-black cursor-pointer">
+            <div className="hidden group-hover:grid absolute bottom-0 w-full grid-cols-1 bg-gray-800/90 text-white text-xs">
+              <button className="text-center py-2 px-2 hover:bg-black/60 font-semibold  cursor-pointer">
+                Quick Cart
+              </button>
+              {/* <p className="text-center py-2 hover:bg-white hover:text-black cursor-pointer">
                 S
               </p>
               <p className="text-center py-2 hover:bg-white hover:text-black cursor-pointer">
@@ -112,14 +104,14 @@ export default function ProductCard2({
               </p>
               <p className="text-center py-2 hover:bg-white hover:text-black cursor-pointer">
                 XXL
-              </p>
+              </p> */}
             </div>
           </div>
 
           {/* Content */}
           <div className="p-3 w-full">
             {/* Title */}
-            <h3 className="text-base font-semibold text-center line-clamp-2 h-12 overflow-hidden">
+            <h3 className="text-[18px] font-semibold text-center line-clamp-2 h-12 overflow-hidden">
               {item.name}
             </h3>
 
@@ -130,39 +122,32 @@ export default function ProductCard2({
                   key={i}
                   size={14}
                   className={cn(
-                    "stroke-yellow-500",
                     i < Math.floor(item.rating)
-                      ? "fill-yellow-500"
-                      : "fill-gray-200"
+                      ? "fill-yellow-500 stroke-yellow-500"
+                      : "fill-white stroke-gray-500"
                   )}
                 />
               ))}
               <span className="ml-1 text-sm text-gray-500">
-                ({item.num_of_sale})
+                ({item.sales_count})
               </span>
             </div>
 
             {/* Price */}
             <div className="mt-2 flex flex-col items-center">
-              {discountedPriceNum < basePriceNum ? (
-                <>
-                  <span className="text-red-600 font-semibold text-lg">
-                    BDT {discountedPriceNum.toLocaleString()}
-                  </span>
-                  <span className="line-through text-gray-400 text-sm">
-                    BDT {basePriceNum.toLocaleString()}
-                  </span>
-                </>
-              ) : (
-                <span className="text-red-500 font-semibold text-lg">
-                  BDT {basePriceNum.toLocaleString()}
+              <>
+                <span className="text-red-600 font-semibold text-lg">
+                  BDT {item.discounted_price.toLocaleString()}
                 </span>
-              )}
+                <span className="line-through text-gray-400 text-sm">
+                  BDT {item.base_price.toLocaleString()}
+                </span>
+              </>
             </div>
 
             {/* Sales count */}
             <div className="mt-1 text-center text-xs text-gray-500">
-              {item.num_of_sale} sold
+              {item.sales_count} sold
             </div>
 
             {/* Club Points */}

@@ -50,16 +50,17 @@ const Header = async () => {
       })),
     })),
   }));
+  // <div className="bg-white flex items-center justify-between w-screem  border-b-[1px] border-slate-300 py-4 top-0 left-0 sticky z-50 ">
 
   return (
-    <div className="bg-white flex items-center justify-between w-screem  border-b-[1px] border-slate-300 py-4 top-0 left-0 sticky z-50 ">
+    <div className="bg-white grid grid-cols-3 w-full border-b-[1px] border-slate-300 py-4 top-0 left-0 sticky z-50 ">
       <MobileMenu categories={processData} />
 
-      <NavigationMenu className="hidden md:flex mx-4 text-black">
+      <NavigationMenu className="hidden lg:flex pl-7  w-full  text-black">
         <NavigationMenuList>
           {processData.map((category: Category) => (
             <NavigationMenuItem key={category.id}>
-              <NavigationMenuTrigger className="[&>svg]:hidden bg-transparent hover:bg-gray-100 px-4 py-2">
+              <NavigationMenuTrigger className="[&>svg]:hidden bg-transparent hover:bg-gray-100 px-2 py-2">
                 {category.name}
               </NavigationMenuTrigger>
               <NavigationMenuContent>
@@ -108,13 +109,15 @@ const Header = async () => {
         </NavigationMenuList>
       </NavigationMenu>
 
-      <Link href={"/"} className="active:animate-ping ">
-        <Image src={"/logo.png"} alt="Logo" width={40} height={10} />
-      </Link>
+      <div className="flex justify-center">
+        <Link href={"/"} className="active:animate-ping">
+          <Image src={"/logo.png"} alt="Logo" width={40} height={40} />
+        </Link>
+      </div>
 
-      <div className="flex items-center space-x-4 pr-6">
+      <div className=" flex justify-end items-center w-full space-x-4 pr-6">
         <ProductSearch />
-        <Link href={"/login"}>
+        <Link href={"/login"} className=" hidden md:block">
           <div className=" h-8 w-8 bg-gray-200 rounded-full flex justify-center items-center">
             <UserRound size={14} />
           </div>
