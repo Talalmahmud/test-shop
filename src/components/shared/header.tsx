@@ -7,19 +7,12 @@ import {
   NavigationMenu,
   NavigationMenuContent,
   NavigationMenuItem,
-  NavigationMenuLink,
   NavigationMenuList,
   NavigationMenuTrigger,
 } from "../ui/navigation-menu";
 import Image from "next/image";
 import MobileMenu from "./mobile-menu";
-
-const linkList = [
-  { name: "Home", href: "#" },
-  { name: "Products", href: "#" },
-  { name: "About", href: "#" },
-  { name: "Contact", href: "#" },
-];
+import { cookies } from "next/headers";
 
 type Category = {
   id: number;
@@ -35,6 +28,7 @@ type Category = {
 };
 
 const Header = async () => {
+  const cookie = await cookies();
   const listData = await fetch(
     "http://192.168.50.3/elevatedbd-main/public/api/v2/categories/navigation"
   ).then((res) => res.json());
@@ -117,7 +111,10 @@ const Header = async () => {
 
       <div className=" flex justify-end items-center w-full space-x-4 pr-6">
         <ProductSearch />
-        <Link href={"/login"} className=" hidden md:block">
+        <Link
+          href={cookie.get("token") ? "/user" : "/login"}
+          className=" hidden md:block"
+        >
           <div className=" h-8 w-8 bg-gray-200 rounded-full flex justify-center items-center">
             <UserRound size={14} />
           </div>

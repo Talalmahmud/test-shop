@@ -9,6 +9,8 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import ProductSlider2 from "@/components/shared/slider2";
+import ProductSliderWithoutFilter from "@/components/shared/sliderwithoutfilter";
 
 // const product = {
 //   id: 1,
@@ -44,155 +46,179 @@ export default async function page({
   ];
 
   return (
-    <section className="container mx-auto md:px-7 py-10 grid grid-cols-1 lg:grid-cols-3 gap-10">
-      {/* Left - Images */}
-      <div className="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
-        {productImage.map((img, i) => (
-          <div
-            key={i}
-            className="relative w-full h-[450px] rounded-xl overflow-hidden bg-gray-100"
-          >
-            <Image
-              src={img}
-              alt={img}
-              height={200}
-              width={600}
-              className="object-cover w-full h-full"
-            />
-          </div>
-        ))}
-      </div>
-
-      {/* Right - Details */}
-      <div>
-        {/* Reviews */}
-        <div className="flex items-center gap-1 text-yellow-500">
-          {/* {Array.from({ length: 5 }).map((_, i) => (
-            <Star
+    <div>
+      {" "}
+      <section className="w-full px-6 md:px-7 py-10 grid grid-cols-1 lg:grid-cols-3 gap-10">
+        {/* Left - Images */}
+        <div className="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
+          {productImage.map((img, i) => (
+            <div
               key={i}
-              size={16}
-              className={cn(
-                i < product1.reviews.star_rating.value
-                  ? "fill-yellow-500"
-                  : "fill-gray-200"
+              className="relative w-full h-[450px] rounded-xl overflow-hidden bg-gray-100"
+            >
+              <Image
+                src={img}
+                alt={img}
+                height={200}
+                width={600}
+                className="object-cover w-full h-full"
+              />
+            </div>
+          ))}
+        </div>
+
+        {/* Right - Details */}
+        <div>
+          {/* Reviews */}
+          <div className="flex items-center gap-1 text-yellow-500">
+            {/* {Array.from({ length: 5 }).map((_, i) => (
+          <Star
+            key={i}
+            size={16}
+            className={cn(
+              i < product1.reviews.star_rating.value
+                ? "fill-yellow-500"
+                : "fill-gray-200"
+            )}
+          />
+        ))} */}
+            <span className="ml-2 text-sm text-gray-500">
+              {product1?.data.reviews?.statistics?.total} reviews
+            </span>
+          </div>
+
+          {/* Title */}
+          <h1 className="text-3xl font-bold mt-2">{product1?.data.name}</h1>
+
+          {/* Price */}
+          <div className="mt-3">
+            <p className="text-red-600 font-semibold text-xl">
+              BDT {product1?.data.pricing?.base_price.toLocaleString()}
+            </p>
+            <p className="line-through text-gray-400 text-sm">
+              BDT {product1?.data.pricing?.discounted_price.toLocaleString()}
+            </p>
+            {/* <p className="text-sm text-red-500">Earn {product1.entries} entries</p> */}
+          </div>
+
+          {/* Colors */}
+          <div className="mt-5">
+            <p className="font-medium"> Colors</p>
+            <div className="flex gap-2 mt-2">
+              {product1.data.specifications.colors.map(
+                (color: { code: string }, i: number) => (
+                  <span
+                    key={i}
+                    className="w-7 h-7 rounded-full border cursor-pointer"
+                    style={{ backgroundColor: color.code }}
+                  />
+                )
               )}
-            />
-          ))} */}
-          <span className="ml-2 text-sm text-gray-500">
-            {product1?.data.reviews?.statistics?.total} reviews
-          </span>
-        </div>
+            </div>
+          </div>
 
-        {/* Title */}
-        <h1 className="text-3xl font-bold mt-2">{product1?.data.name}</h1>
-
-        {/* Price */}
-        <div className="mt-3">
-          <p className="text-red-600 font-semibold text-xl">
-            BDT {product1?.data.pricing?.base_price.toLocaleString()}
-          </p>
-          <p className="line-through text-gray-400 text-sm">
-            BDT {product1?.data.pricing?.discounted_price.toLocaleString()}
-          </p>
-          {/* <p className="text-sm text-red-500">Earn {product1.entries} entries</p> */}
-        </div>
-
-        {/* Colors */}
-        <div className="mt-5">
-          <p className="font-medium"> Colors</p>
-          <div className="flex gap-2 mt-2">
-            {product1.data.specifications.colors.map(
-              (color: { code: string }, i: number) => (
-                <span
-                  key={i}
-                  className="w-7 h-7 rounded-full border cursor-pointer"
-                  style={{ backgroundColor: color.code }}
-                />
+          {/* Sizes */}
+          <div className="mt-6">
+            {product1.data.specifications.attributes.map(
+              (attribute: { name: string; values: string[]; id: string }) => (
+                <div className="flex flex-col" key={attribute.id}>
+                  <p className=" font-medium">{attribute.name}</p>
+                  <div className="flex gap-3 mt-2">
+                    {attribute.values.map((size, i) => (
+                      <Button
+                        key={i}
+                        variant="outline"
+                        className="w-12 h-12 rounded-md"
+                      >
+                        {size}
+                      </Button>
+                    ))}
+                  </div>
+                </div>
               )
             )}
-          </div>
-        </div>
-
-        {/* Sizes */}
-        <div className="mt-6">
-          <p className="font-medium">Size</p>
-          {product1.data.specifications.attributes.map(
-            (attribute: { name: string; values: string[]; id: string }) => (
-              <div className="flex flex-col" key={attribute.id}>
-                <p>{attribute.name}</p>
-                <div className="flex gap-3 mt-2">
-                  {attribute.values.map((size, i) => (
-                    <Button
-                      key={i}
-                      variant="outline"
-                      className="w-12 h-12 rounded-md"
-                    >
-                      {size}
-                    </Button>
-                  ))}
-                </div>
-              </div>
-            )
-          )}
-          {/* <div className="flex gap-3 mt-2">
-            {product1.sizes.map((size, i) => (
-              <Button
-                key={i}
-                variant="outline"
-                className="w-12 h-12 rounded-md"
-              >
-                {size}
-              </Button>
-            ))}
-          </div> */}
-        </div>
-
-        {/* Styles */}
-        {/* <div className="mt-6">
-          <p className="font-medium">Style</p>
-          <div className="flex gap-3 mt-2">
-            {product.styles.map((style, i) => (
-              <Button
-                key={i}
-                variant="outline"
-                className="px-6 py-2 rounded-md"
-              >
-                {style}
-              </Button>
-            ))}
-          </div>
+            {/* <div className="flex gap-3 mt-2">
+          {product1.sizes.map((size, i) => (
+            <Button
+              key={i}
+              variant="outline"
+              className="w-12 h-12 rounded-md"
+            >
+              {size}
+            </Button>
+          ))}
         </div> */}
+          </div>
 
-        {/* Add to Cart */}
-        <Button className="w-full mt-8 h-12 text-lg font-semibold">
-          Add To Cart
-        </Button>
-
-        {/* Description */}
-        <div className="mt-6 text-sm text-gray-600">
-          <p>{product1.data.description}</p>
-          {/* {SafeComponent(product1.data.description)} */}
-          <div
-            dangerouslySetInnerHTML={{ __html: product1.data.description }}
-          />
+          {/* Styles */}
+          {/* <div className="mt-6">
+        <p className="font-medium">Style</p>
+        <div className="flex gap-3 mt-2">
+          {product.styles.map((style, i) => (
+            <Button
+              key={i}
+              variant="outline"
+              className="px-6 py-2 rounded-md"
+            >
+              {style}
+            </Button>
+          ))}
         </div>
+      </div> */}
 
-        {/* Accordion Sections */}
-        <Accordion type="single" collapsible className="mt-6">
-          <AccordionItem value="size-fit">
-            <AccordionTrigger>Size & Fit</AccordionTrigger>
-            <AccordionContent>
-              True to size. Model is 5&apos;10&quot;, 170lbs and wears a size M.
-            </AccordionContent>
-          </AccordionItem>
-          <AccordionItem value="materials-care">
-            <AccordionTrigger>Materials & Care</AccordionTrigger>
-            <AccordionContent>
-              95% Cotton, 5% Spandex. Machine wash cold, tumble dry low.
-            </AccordionContent>
-          </AccordionItem>
-        </Accordion>
+          {/* Add to Cart */}
+          <Button className="w-full mt-8 h-12 text-lg font-semibold">
+            Add To Cart
+          </Button>
+
+          {/* Description */}
+          <div className="mt-6 text-sm text-gray-600">
+            {/* <p>{product1.data.description}</p> */}
+            {/* {SafeComponent(product1.data.description)} */}
+            <div
+              dangerouslySetInnerHTML={{ __html: product1.data.description }}
+            />
+          </div>
+
+          {/* Accordion Sections */}
+          {/* <Accordion type="single" collapsible className="mt-6">
+        <AccordionItem value="size-fit">
+          <AccordionTrigger>Size & Fit</AccordionTrigger>
+          <AccordionContent>
+            True to size. Model is 5&apos;10&quot;, 170lbs and wears a size M.
+          </AccordionContent>
+        </AccordionItem>
+        <AccordionItem value="materials-care">
+          <AccordionTrigger>Materials & Care</AccordionTrigger>
+          <AccordionContent>
+            95% Cotton, 5% Spandex. Machine wash cold, tumble dry low.
+          </AccordionContent>
+        </AccordionItem>
+      </Accordion> */}
+        </div>
+      </section>{" "}
+      <div className=" w-full py-10 px-6 lg:px-20">
+        <h2 className="text-[40px] font-serif ">Related Products</h2>
+        {/* <div className=" flex items-center gap-2 py-4">
+        <Button className=" rounded-full">men</Button>{" "}
+        <Button className=" rounded-full">women</Button>
+      </div> */}
+        <ProductSliderWithoutFilter
+          slides={product1.data.related_products}
+          className="w-full"
+        />
       </div>
-    </section>
+      <div className=" w-full py-10 px-6 lg:px-20">
+        <h2 className="text-[40px] font-serif ">Top Selling Products</h2>
+        {/* <div className=" flex items-center gap-2 py-4">
+        <Button className=" rounded-full">men</Button>{" "}
+        <Button className=" rounded-full">women</Button>
+      </div> */}
+        <ProductSliderWithoutFilter
+          slides={product1.data.top_selling_products}
+          className="w-full"
+        />
+      </div>
+    </div>
   );
 }

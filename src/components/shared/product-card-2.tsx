@@ -137,10 +137,10 @@ export default function ProductCard2({
             <div className="mt-2 flex flex-col items-center">
               <>
                 <span className="text-red-600 font-semibold text-lg">
-                  BDT {item.discounted_price.toLocaleString()}
+                  BDT {item.discounted_price}
                 </span>
                 <span className="line-through text-gray-400 text-sm">
-                  BDT {item.base_price.toLocaleString()}
+                  BDT {item.base_price}
                 </span>
               </>
             </div>
