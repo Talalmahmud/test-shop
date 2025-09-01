@@ -74,7 +74,7 @@ export default function ProductCard2({
         </span>
       )}
 
-      <Link href={`/product/${item.slug}`}>
+      <Link href={`/product/${item.id}`}>
         <CardContent className="flex flex-col w-full items-center p-0">
           {/* Image Wrapper */}
           <div className="group relative h-[250px] w-full overflow-hidden bg-gray-50">
@@ -128,9 +128,9 @@ export default function ProductCard2({
                   )}
                 />
               ))}
-              <span className="ml-1 text-sm text-gray-500">
+              {/* <span className="ml-1 text-sm text-gray-500">
                 ({item.sales_count})
-              </span>
+              </span> */}
             </div>
 
             {/* Price */}

@@ -46,7 +46,6 @@ type Props = {
 };
 
 const ProductSlider2 = ({ slides, className }: Props) => {
-  console.log(slides);
   const prevRef = useRef<HTMLButtonElement>(null);
   const nextRef = useRef<HTMLButtonElement>(null);
   const [swiperInstance, setSwiperInstance] = useState<SwiperType | null>(null);
