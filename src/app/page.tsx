@@ -117,12 +117,15 @@ type Category = {
   id: number;
   name: string;
   thumbnail?: string;
+  slug?: string;
   categories: {
     id: number;
     name: string;
+    slug?: string;
     categories: {
       id: number;
       name: string;
+      slug?: string;
     }[];
   }[];
 };
@@ -145,14 +148,15 @@ export default async function Home() {
     `${process.env.NEXT_PUBLIC_BASE_URL}/products-list/new-arrivals?limit=10`
   ).then((res) => res.json());
 
-  const listData = await fetch(
+  const categoryData = await fetch(
     `${process.env.NEXT_PUBLIC_BASE_URL}/categories/navigation`
   ).then((res) => res.json());
 
-  const processData = listData.map((item: Category) => ({
+  const processData = categoryData.map((item: Category) => ({
     id: item.id,
     name: item.name,
     thumbnail: item.thumbnail,
+    slug: item.slug,
   }));
   const processData2 = [...processData];
 
@@ -203,7 +207,7 @@ export default async function Home() {
               <div key={rowIndex} className="flex gap-6">
                 {row.map((category: Category) => (
                   <Link
-                    href={`/search/${category.id}`}
+                    href={`/search/${category.slug}`}
                     key={category.id}
                     className={`relative h-[400px] rounded-xl overflow-hidden group cursor-pointer ${basisClass}`}
                   >
