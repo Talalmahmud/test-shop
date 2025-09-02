@@ -27,7 +27,6 @@ const Footer = async () => {
     slug: item.slug,
   }));
 
-
   // group items into rows of max 4
 
   return (
@@ -47,7 +46,7 @@ const Footer = async () => {
                     (link: { name: string; slug: string; id: number }) => (
                       <li key={link.id}>
                         <Link
-                          href={`/search/${link.slug}`}
+                          href={`/search?category_slug=${link.slug}`}
                           className="text-sm text-gray-300 hover:text-white transition-colors"
                         >
                           {link.name}
