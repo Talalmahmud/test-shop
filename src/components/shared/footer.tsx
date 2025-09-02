@@ -16,45 +16,9 @@ type Category = {
   }[];
 };
 const Footer = async () => {
-  const footerSections = [
-    {
-      title: "Shop All Men's",
-      links: ["About Us", "FAQ"],
-    },
-    {
-      title: "Shop All Women's",
-      links: ["Rewards", "My Account"],
-    },
-    {
-      title: "Gift Card",
-      links: ["Careers", "Order Tracking"],
-    },
-    {
-      title: "NYC Store",
-      links: ["Military & First Responders", "Returns & Exchanges"],
-    },
-    {
-      title: "Corporate and Wholesale",
-      links: ["Shipping Protection Policy"],
-    },
-    {
-      title: "Cuts Marketplace",
-      links: ["Size + Fit"],
-    },
-    {
-      title: "Cuts Advocates",
-      links: ["Contact Us"],
-    },
-    {
-      title: "Accessibility",
-      links: [],
-    },
-  ];
-
   const categoryData = await fetch(
     `${process.env.NEXT_PUBLIC_BASE_URL}/categories/navigation`
   ).then((res) => res.json());
-  console.log(categoryData);
 
   const processData = categoryData.map((item: Category) => ({
     id: item.id,
@@ -63,7 +27,6 @@ const Footer = async () => {
     slug: item.slug,
   }));
 
-  console.log(processData);
 
   // group items into rows of max 4
 

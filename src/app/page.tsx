@@ -142,7 +142,6 @@ export default async function Home() {
   const trendingProduct = await fetch(
     `${process.env.NEXT_PUBLIC_BASE_URL}/products-list/trending?limit=10`
   ).then((res) => res.json());
-  console.log("trendingProduct", trendingProduct.data.products);
 
   const newProduct = await fetch(
     `${process.env.NEXT_PUBLIC_BASE_URL}/products-list/new-arrivals?limit=10`
@@ -207,7 +206,7 @@ export default async function Home() {
               <div key={rowIndex} className="flex gap-6">
                 {row.map((category: Category) => (
                   <Link
-                    href={`/search/${category.slug}`}
+                    href={`/search?category_slug=${category.slug}`}
                     key={category.id}
                     className={`relative h-[400px] rounded-xl overflow-hidden group cursor-pointer ${basisClass}`}
                   >
