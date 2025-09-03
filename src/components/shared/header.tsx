@@ -70,7 +70,9 @@ const Header = async () => {
                           {subCategory.children.map((subSubCategory) => (
                             <li key={subSubCategory.id}>
                               <Link
-                                href={`/search?category_slug=${subSubCategory.slug}`}
+                                href={`/search?category_slug=${
+                                  subSubCategory.slug
+                                }&gender=${subCategory.name.toLowerCase()}`}
                                 className="text-gray-600 hover:text-blue-600 block py-1"
                               >
                                 {subSubCategory.name}

@@ -149,8 +149,8 @@ const ProductSlider2 = ({ slides, className }: Props) => {
               className="!overflow-visible"
             >
               {filteredSlides.map((slide) => (
-                <SwiperSlide key={slide.id} className="!w-[300px]">
-                  <ProductCard2 className="w-full sm:w-[300px]" item={slide} />
+                <SwiperSlide key={slide.id} className="!w-[350px]">
+                  <ProductCard2 className="w-full sm:w-[350px]" item={slide} />
                 </SwiperSlide>
               ))}
             </Swiper>

@@ -7,17 +7,26 @@ import { Button } from "../ui/button";
 import CategoryFilter from "./category-filter";
 import ProductCard2 from "./product-card-2";
 import { productFilter } from "@/services/search";
+import { Loader2 } from "lucide-react";
 
 // Your categories data
 type Props = {
   categoryList: Category[];
 };
+interface FilterProps {
+  colors: string[];
+  sizes: string[];
+}
 
 const SearchPage = ({ categoryList }: Props) => {
   const searchParams = useSearchParams();
   const router = useRouter();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [filterData, setFilterData] = useState<FilterProps>({
+    colors: [],
+    sizes: [],
+  });
 
   // Get current filters from URL
   const currentCategory = searchParams.get("category_slug");
@@ -34,6 +43,10 @@ const SearchPage = ({ categoryList }: Props) => {
         const response = await productFilter(queryString);
 
         setProducts(response.data.products || []);
+        setFilterData({
+          colors: response.data.filter_options.colors || [],
+          sizes: response.data.filter_options.sizes || [],
+        });
       } catch (error) {
         console.error("Error fetching products:", error);
       } finally {
@@ -44,22 +57,22 @@ const SearchPage = ({ categoryList }: Props) => {
     fetchProducts();
   }, [searchParams]);
 
-  const clearFilters = () => {
-    // Keep the gender filter when clearing other filters
-    const params = new URLSearchParams();
-    if (currentGender) {
-      params.set("gender", currentGender);
-    }
-    router.replace(`/search?${params.toString()}`);
-  };
+  // const clearFilters = () => {
+  //   // Keep the gender filter when clearing other filters
+  //   const params = new URLSearchParams();
+  //   if (currentGender) {
+  //     params.set("gender", currentGender);
+  //   }
+  //   router.replace(`/search?${params.toString()}`);
+  // };
   console.log(categoryList);
 
   return (
     <div className="flex gap-6 p-6">
       {/* Left sidebar with category filter */}
-      <div className="w-72 flex-shrink-0">
+      <div className="w-72 md:block hidden flex-shrink-0">
         <CategoryFilter categories={categoryList} />
-
+        {/* 
         {(currentCategory || searchParams.toString().includes("gender")) && (
           <Button
             variant="outline"
@@ -68,20 +81,22 @@ const SearchPage = ({ categoryList }: Props) => {
           >
             Clear Filters
           </Button>
-        )}
+        )} */}
       </div>
 
       {/* Main content area */}
       <div className="flex-1">
         <div className="mb-6">
-          <Filter />
+          <Filter filterList={filterData} />
         </div>
 
         {loading ? (
-          <div className="text-center py-8">Loading products...</div>
+          <div className=" flex justify-center items-center py-8">
+            <Loader2 className=" min-h-[80px] min-w-[80px]  animate-spin text-red-800" />
+          </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {products.map((product,index) => (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3  gap-6">
+            {products.map((product, index) => (
               <ProductCard2 key={index} item={product} />
             ))}
 

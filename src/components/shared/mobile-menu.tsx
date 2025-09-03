@@ -22,12 +22,16 @@ import Image from "next/image";
 type CategoryItem = {
   id: number;
   name: string;
+  slug: string;
   children: {
     id: number;
     name: string;
+    slug: string;
+
     children: {
       id: number;
       name: string;
+      slug: string;
     }[];
   }[];
 };
@@ -66,7 +70,9 @@ const MobileMenu = ({ categories }: MobileMenuProps) => {
                       <div key={subCategory.id} className="mb-4 last:mb-0">
                         <SheetClose asChild>
                           <Link
-                            href={`/category/${subCategory.id}`}
+                            href={`/search?category_slug=${
+                              subCategory.slug
+                            }&gender=${subCategory.name.toLowerCase()}`}
                             className="font-medium text-gray-800 block py-2 hover:text-blue-600"
                           >
                             {subCategory.name}
@@ -79,7 +85,9 @@ const MobileMenu = ({ categories }: MobileMenuProps) => {
                               {subCategory.children.map((subSubCategory) => (
                                 <SheetClose key={subSubCategory.id} asChild>
                                   <Link
-                                    href={`/category/${subSubCategory.id}`}
+                                    href={`/search?category_slug=${
+                                      subSubCategory.slug
+                                    }&gender=${subSubCategory.name.toLowerCase()}`}
                                     className="text-gray-600 block py-1 hover:text-blue-600"
                                   >
                                     {subSubCategory.name}

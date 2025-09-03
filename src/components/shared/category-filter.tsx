@@ -93,19 +93,22 @@ const CategoryFilter = ({ categories }: Props) => {
   }) => {
     return (
       <div className="w-full">
-        <div
-          className={`py-2 px-3 cursor-pointer rounded text-sm ${
-            searchParams.get("category_slug") === category.slug
-              ? "bg-blue-50 text-blue-700 font-medium"
-              : "hover:bg-gray-100"
-          } ${level > 0 ? "pl-6" : ""}`}
-          onClick={() => handleCategoryClick(category.slug)}
-        >
-          {category.name}
+        <div>
+          {" "}
+          <div
+            className={`py-1  cursor-pointer  border-b-[1px] border-white text-[18px]  ${
+              searchParams.get("category_slug") === category.slug
+                ? "border-b-black font-medium"
+                : ""
+            } ${level > 0 ? "pl-2 text-black hover:border-black" : ""}`}
+            onClick={() => handleCategoryClick(category.slug)}
+          >
+            {category.name}
+          </div>
         </div>
 
         {category.children && category.children.length > 0 && (
-          <div className="ml-4 border-l border-gray-200">
+          <div className=" text-black">
             {category.children.map((child) => (
               <CategoryItem key={child.id} category={child} level={level + 1} />
             ))}
@@ -116,7 +119,7 @@ const CategoryFilter = ({ categories }: Props) => {
   };
 
   return (
-    <div className="w-64 bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+    <div className="w-64 bg-white hidden md:block ">
       <h3 className="text-lg font-semibold mb-4 text-gray-800">Categories</h3>
 
       {/* gender filter */}
