@@ -34,3 +34,46 @@ export const getTickets = async () => {
     return false;
   }
 };
+
+export const addTicket = async (
+  subject: string,
+  details: string,
+  attachments: []
+) => {
+  try {
+    // Get the token from cookies
+    const token = await getToken();
+
+    // If no token is found, return false
+    if (!token) {
+      console.error("No authentication token found");
+      return false;
+    }
+
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/support-tickets`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          subject: subject,
+          details: details,
+        }),
+      }
+    );
+    const resData = await res.json();
+    console.log(resData);
+    if (!res.ok) {
+      console.error("Failed to add to ticket:", res.status, res.statusText);
+      return false;
+    }
+
+    return true;
+  } catch (error) {
+    console.error("Error adding to ticket:", error);
+    return false;
+  }
+};

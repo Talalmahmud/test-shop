@@ -22,7 +22,7 @@ import {
 
 import { CreateTicketDialog } from "@/components/shared/create-ticket-dialog";
 import { ViewTicketDialog } from "@/components/shared/view-ticket-dialog";
-import { getTickets } from "@/services/ticket";
+import { addTicket, getTickets } from "@/services/ticket";
 export interface Ticket {
   id: number;
   code: string;
@@ -106,28 +106,28 @@ export default function TicketsPage() {
     setIsLoading(false);
   };
 
-  const handleCreateTicket = async (ticketData: Ticket) => {
+  const handleCreateTicket = async (ticketData: {
+    subject: string;
+    details: string;
+    attachments: [];
+  }) => {
     try {
       // Replace with actual API call: POST /support-tickets
       console.log("Creating ticket:", ticketData);
 
       // Simulate API response
-      const newTicket: Ticket = {
-        id: Math.random(),
-        code: `TICKET-${Math.random().toString(36).substr(2, 9).toUpperCase()}`,
-        user_id: 73,
+      const newTicket = {
         subject: ticketData.subject,
         details: ticketData.details,
-        status: "open",
-        status_string: "Open",
-        priority: "medium",
-        priority_string: "Medium",
-        attachments: ticketData.attachments || [],
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-      };
 
-      setTickets((prev) => [newTicket, ...prev]);
+        attachments: ticketData.attachments || [],
+      };
+      const res = await addTicket(
+        ticketData.subject,
+        ticketData.details,
+        ticketData.attachments
+      );
+      fetchTickets();
       setIsCreateDialogOpen(false);
     } catch (error) {
       console.error("Failed to create ticket:", error);

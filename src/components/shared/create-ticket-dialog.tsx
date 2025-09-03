@@ -1,42 +1,56 @@
 // components/create-ticket-dialog.tsx
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Upload, X } from 'lucide-react';
+import { useState } from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Upload, X } from "lucide-react";
 
 interface CreateTicketDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onSubmit: (data: { subject: string; details: string; attachments?: string[] }) => void;
+  onSubmit: (data: {
+    subject: string;
+    details: string;
+    attachments: string[] | [];
+  }) => void;
 }
 
-export function CreateTicketDialog({ open, onOpenChange, onSubmit }: CreateTicketDialogProps) {
-  const [subject, setSubject] = useState('');
-  const [details, setDetails] = useState('');
+export function CreateTicketDialog({
+  open,
+  onOpenChange,
+  onSubmit,
+}: CreateTicketDialogProps) {
+  const [subject, setSubject] = useState("");
+  const [details, setDetails] = useState("");
   const [attachments, setAttachments] = useState<File[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!subject.trim() || !details.trim()) {
       return;
     }
 
     setIsSubmitting(true);
-    
+
     try {
       // Upload attachments if any
       const attachmentUrls: string[] = [];
-      
+
       for (const file of attachments) {
         // Simulate file upload - replace with actual upload logic
-        const url = await new Promise<string>(resolve => 
+        const url = await new Promise<string>((resolve) =>
           setTimeout(() => resolve(URL.createObjectURL(file)), 500)
         );
         attachmentUrls.push(url);
@@ -45,16 +59,15 @@ export function CreateTicketDialog({ open, onOpenChange, onSubmit }: CreateTicke
       onSubmit({
         subject: subject.trim(),
         details: details.trim(),
-        attachments: attachmentUrls.length > 0 ? attachmentUrls : undefined
+        attachments: attachmentUrls.length > 0 ? attachmentUrls : [],
       });
 
       // Reset form
-      setSubject('');
-      setDetails('');
+      setSubject("");
+      setDetails("");
       setAttachments([]);
-      
     } catch (error) {
-      console.error('Failed to create ticket:', error);
+      console.error("Failed to create ticket:", error);
     } finally {
       setIsSubmitting(false);
     }
@@ -63,12 +76,12 @@ export function CreateTicketDialog({ open, onOpenChange, onSubmit }: CreateTicke
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (files) {
-      setAttachments(prev => [...prev, ...Array.from(files)]);
+      setAttachments((prev) => [...prev, ...Array.from(files)]);
     }
   };
 
   const removeAttachment = (index: number) => {
-    setAttachments(prev => prev.filter((_, i) => i !== index));
+    setAttachments((prev) => prev.filter((_, i) => i !== index));
   };
 
   return (
@@ -77,7 +90,8 @@ export function CreateTicketDialog({ open, onOpenChange, onSubmit }: CreateTicke
         <DialogHeader>
           <DialogTitle>Create Support Ticket</DialogTitle>
           <DialogDescription>
-            Fill out the form below to create a new support ticket. Our team will get back to you as soon as possible.
+            Fill out the form below to create a new support ticket. Our team
+            will get back to you as soon as possible.
           </DialogDescription>
         </DialogHeader>
 
@@ -114,11 +128,14 @@ export function CreateTicketDialog({ open, onOpenChange, onSubmit }: CreateTicke
                 onChange={handleFileUpload}
                 className="cursor-pointer"
               />
-              
+
               {attachments.length > 0 && (
                 <div className="space-y-2">
                   {attachments.map((file, index) => (
-                    <div key={index} className="flex items-center justify-between p-2 border rounded">
+                    <div
+                      key={index}
+                      className="flex items-center justify-between p-2 border rounded"
+                    >
                       <span className="text-sm truncate">{file.name}</span>
                       <Button
                         type="button"
@@ -144,8 +161,11 @@ export function CreateTicketDialog({ open, onOpenChange, onSubmit }: CreateTicke
             >
               Cancel
             </Button>
-            <Button type="submit" disabled={isSubmitting || !subject.trim() || !details.trim()}>
-              {isSubmitting ? 'Creating...' : 'Create Ticket'}
+            <Button
+              type="submit"
+              disabled={isSubmitting || !subject.trim() || !details.trim()}
+            >
+              {isSubmitting ? "Creating..." : "Create Ticket"}
             </Button>
           </div>
         </form>
