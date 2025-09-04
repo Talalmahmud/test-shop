@@ -98,9 +98,9 @@ const Header = async () => {
         </NavigationMenuList>
       </NavigationMenu>
 
-      <div className="flex justify-center">
+      <div className="flex flex-col items-center gap-1">
         <Link href={"/"} className="active:animate-ping">
-          <Image src={"/logo.png"} alt="Logo" width={40} height={40} />
+          <Image src={"/logo.jpeg"} alt="Logo" width={50} height={50} />
         </Link>
       </div>
 

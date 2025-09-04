@@ -77,3 +77,7 @@ export const addTicket = async (
     return false;
   }
 };
+
+export const deleteTicket = async (id: number) => {};
+export const addReply = async (id: number) => {};
+export const getReplies = async (id: number) => {};
