@@ -38,7 +38,7 @@ export const getTickets = async () => {
 export const addTicket = async (
   subject: string,
   details: string,
-  attachments: []
+  attachments: File[] = [] // Use empty array as default instead of empty string
 ) => {
   try {
     // Get the token from cookies
@@ -50,8 +50,64 @@ export const addTicket = async (
       return false;
     }
 
+    // Create FormData object
+    const formData = new FormData();
+    formData.append("subject", subject);
+    formData.append("details", details);
+
+    // Add each attachment file if they exist
+    if (attachments && attachments.length > 0) {
+      attachments.forEach((file) => {
+        formData.append("attachments", file);
+      });
+    }
+
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_BASE_URL}/support-tickets`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          // Don't set Content-Type - let browser set it with boundary
+        },
+        body: formData,
+      }
+    );
+
+    if (!res.ok) {
+      const errorData = await res.json().catch(() => ({}));
+      console.error(
+        "Failed to add ticket:",
+        res.status,
+        res.statusText,
+        errorData
+      );
+      return false;
+    }
+
+    const resData = await res.json();
+    console.log(resData);
+    return true;
+  } catch (error) {
+    console.error("Error adding ticket:", error);
+    return false;
+  }
+};
+
+export const deleteTicket = async (id: number) => {};
+export const addReply = async (id: number, reply: string) => {
+  try {
+    // Get the token from cookies
+    const token = await getToken();
+
+    // If no token is found, return false
+    if (!token) {
+      console.error("No authentication token found");
+      return false;
+    }
+
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/support-tickets/${id}/reply`,
       {
         method: "POST",
         headers: {
@@ -59,8 +115,7 @@ export const addTicket = async (
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
-          subject: subject,
-          details: details,
+          reply,
         }),
       }
     );
@@ -77,7 +132,3 @@ export const addTicket = async (
     return false;
   }
 };
-
-export const deleteTicket = async (id: number) => {};
-export const addReply = async (id: number) => {};
-export const getReplies = async (id: number) => {};

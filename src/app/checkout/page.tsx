@@ -35,6 +35,8 @@ import {
 } from "@/services/cart";
 import { SheetFooter } from "@/components/ui/sheet";
 import Image from "next/image";
+import { addOrder } from "@/services/order";
+import { useRouter } from "next/navigation";
 
 interface CartItem {
   id: number;
@@ -62,6 +64,7 @@ interface CartPrice {
   coupon_applied: false;
 }
 export default function CheckoutPage() {
+  const router = useRouter();
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [cartPrice, setCartPrice] = useState<CartPrice>({
     sub_total: "",
@@ -131,19 +134,23 @@ export default function CheckoutPage() {
   const shippingFee = 60;
   const total = subtotal + shippingFee;
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
+  // const handleInputChange = (e) => {
+  //   const { name, value } = e.target;
+  //   setFormData((prev) => ({
+  //     ...prev,
+  //     [name]: value,
+  //   }));
+  // };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const handleSubmit = async () => {
     // Handle form submission here
-    console.log("Form submitted:", formData);
-    alert("Order placed successfully!");
+    const resData = await addOrder();
+    if (resData) {
+      alert("Order placed successfully!");
+      router.push("/user/order");
+    } else {
+      alert("Order is not placed successfully!");
+    }
   };
 
   return (
@@ -160,7 +167,7 @@ export default function CheckoutPage() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Left Column - User Details */}
           <div>
-            <Card>
+            {/* <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <User className="h-5 w-5" />
@@ -321,6 +328,171 @@ export default function CheckoutPage() {
                     Place Order
                   </Button>
                 </form>
+              </CardContent>
+            </Card> */}
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  {/* <User className="h-5 w-5" />
+                  Customer Information */}
+                </CardTitle>
+                <CardDescription>
+                  Advance bKash 120 BDT on Outside Dhaka Orders. (bKash merchant
+                  payment-01314889214) Call to Order: 01786633874 (10am- 10pm).
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                {/* <form onSubmit={handleSubmit} className="space-y-4"> */}
+                {/*  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                   <div className="space-y-2">
+                      <Label htmlFor="name">Full Name *</Label>
+                      <Input
+                        id="name"
+                        name="name"
+                        placeholder="John Doe"
+                        value={formData.name}
+                        onChange={handleInputChange}
+                        required
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="email">Email Address *</Label>
+                      <Input
+                        id="email"
+                        name="email"
+                        type="email"
+                        placeholder="john@example.com"
+                        value={formData.email}
+                        onChange={handleInputChange}
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="phone" className="flex items-center gap-2">
+                      <Phone className="h-4 w-4" />
+                      Phone Number *
+                    </Label>
+                    <Input
+                      id="phone"
+                      name="phone"
+                      type="tel"
+                      placeholder="01XXX-XXXXXX"
+                      value={formData.phone}
+                      onChange={handleInputChange}
+                      required
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label
+                      htmlFor="address"
+                      className="flex items-center gap-2"
+                    >
+                      <MapPin className="h-4 w-4" />
+                      Delivery Address *
+                    </Label>
+                    <Textarea
+                      id="address"
+                      name="address"
+                      placeholder="House #, Road #, Area, District"
+                      value={formData.address}
+                      onChange={handleInputChange}
+                      required
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="city">City *</Label>
+                      <Input
+                        id="city"
+                        name="city"
+                        placeholder="Dhaka"
+                        value={formData.city}
+                        onChange={handleInputChange}
+                        required
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="postalCode">Postal Code</Label>
+                      <Input
+                        id="postalCode"
+                        name="postalCode"
+                        placeholder="1200"
+                        value={formData.postalCode}
+                        onChange={handleInputChange}
+                      />
+                    </div>
+                  </div> */}
+
+                <div className="space-y-4 pt-4">
+                  <CardTitle className="flex items-center gap-2 text-lg">
+                    <CreditCard className="h-5 w-5" />
+                    Payment Method
+                  </CardTitle>
+
+                  <RadioGroup
+                    disabled
+                    value={formData.paymentMethod}
+                    onValueChange={(value) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        paymentMethod: value,
+                      }))
+                    }
+                    className="space-y-3"
+                  >
+                    <div className="flex items-center space-x-2 rounded-md border p-4">
+                      <RadioGroupItem value="cash" id="cash" />
+                      <Label htmlFor="cash" className="flex-1 cursor-pointer">
+                        <div className="flex justify-between items-center">
+                          <span>Cash on Delivery</span>
+                          <Badge variant="outline" className="ml-2">
+                            Recommended
+                          </Badge>
+                        </div>
+                        <p className="text-sm text-muted-foreground font-normal">
+                          Pay when you receive your order
+                        </p>
+                      </Label>
+                    </div>
+
+                    <div className="flex items-center space-x-2 rounded-md border p-4">
+                      <RadioGroupItem value="bkash" id="bkash" />
+                      <Label htmlFor="bkash" className="flex-1 cursor-pointer">
+                        <div className="flex items-center gap-2">
+                          <span>bKash</span>
+                          <Badge variant="secondary">Popular</Badge>
+                        </div>
+                        <p className="text-sm text-red-600 font-normal">
+                          It will upcoming
+                        </p>
+                      </Label>
+                    </div>
+                  </RadioGroup>
+                </div>
+
+                {/* <div className="space-y-2">
+                    <Label htmlFor="notes">Order Notes (Optional)</Label>
+                    <Textarea
+                      id="notes"
+                      name="notes"
+                      placeholder="Special instructions for delivery"
+                      value={formData.notes}
+                      onChange={handleInputChange}
+                      rows={3}
+                    />
+                  </div> */}
+
+                <Button
+                  onClick={handleSubmit}
+                  className="w-full py-6 text-lg mt-4"
+                >
+                  Place Order
+                </Button>
               </CardContent>
             </Card>
 

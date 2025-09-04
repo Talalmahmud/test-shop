@@ -13,10 +13,10 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
+import { userPasswordChange } from "@/app/action";
 
 export default function ChangePasswordPage() {
   const [formData, setFormData] = useState({
-    currentPassword: "",
     newPassword: "",
     confirmPassword: "",
   });
@@ -26,10 +26,6 @@ export default function ChangePasswordPage() {
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
-
-    if (!formData.currentPassword) {
-      newErrors.currentPassword = "Current password is required";
-    }
 
     if (!formData.newPassword) {
       newErrors.newPassword = "New password is required";
@@ -58,14 +54,14 @@ export default function ChangePasswordPage() {
 
     try {
       // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
 
       // Here you would typically make an API call to change the password
       console.log("Password change submitted:", formData);
 
-      // Show success message and redirect
+      const res = await userPasswordChange(formData.confirmPassword);
+      console.log(res);
       alert("Password changed successfully!");
-      router.push("/profile");
+      router.push("/user");
     } catch (error) {
       console.error("Error changing password:", error);
       setErrors({ submit: "Failed to change password. Please try again." });
@@ -104,21 +100,6 @@ export default function ChangePasswordPage() {
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
             {/* Current Password */}
-            <div className="space-y-2">
-              <Label htmlFor="currentPassword">Current Password</Label>
-              <Input
-                id="currentPassword"
-                name="currentPassword"
-                type="password"
-                value={formData.currentPassword}
-                onChange={handleInputChange}
-                className={errors.currentPassword ? "border-red-500" : ""}
-                placeholder="Enter current password"
-              />
-              {errors.currentPassword && (
-                <p className="text-red-500 text-sm">{errors.currentPassword}</p>
-              )}
-            </div>
 
             {/* New Password */}
             <div className="space-y-2">

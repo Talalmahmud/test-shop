@@ -30,7 +30,6 @@ import {
   getTickets,
   deleteTicket,
   addReply,
-  getReplies,
 } from "@/services/ticket";
 import {
   Table,
@@ -52,7 +51,17 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-
+export interface Reply {
+  id: number;
+  reply: number;
+  user_id: number;
+  user: {
+    name: string;
+    email: string;
+  };
+  created_at: string;
+  updated_at: string;
+}
 export interface Ticket {
   id: number;
   code: string;
@@ -62,18 +71,9 @@ export interface Ticket {
   status: "open" | "pending" | "resolved" | "closed";
   status_string: string;
   priority: "low" | "medium" | "high" | "urgent";
+  ticketreplies: Reply[];
   priority_string: string;
   attachments: string[];
-  created_at: string;
-  updated_at: string;
-}
-
-export interface Reply {
-  id: number;
-  ticket_id: number;
-  user_id: number;
-  message: string;
-  is_admin: boolean;
   created_at: string;
   updated_at: string;
 }
@@ -91,16 +91,17 @@ export default function TicketsPage() {
     fetchTickets();
   }, []);
 
-  useEffect(() => {
-    if (selectedTicket) {
-      fetchReplies(selectedTicket.id);
-    }
-  }, [selectedTicket]);
+  // useEffect(() => {
+  //   if (selectedTicket) {
+  //     fetchReplies(selectedTicket.id);
+  //   }
+  // }, [selectedTicket]);
 
   const fetchTickets = async () => {
     setIsLoading(true);
     try {
       const res = await getTickets();
+      console.log(res);
       setTickets(res.data.data);
     } catch (error) {
       console.error("Failed to fetch tickets:", error);
@@ -108,32 +109,17 @@ export default function TicketsPage() {
     setIsLoading(false);
   };
 
-  const fetchReplies = async (ticketId: number) => {
-    try {
-      const res = await getReplies(ticketId);
-      setReplies(res.data.data || []);
-    } catch (error) {
-      console.error("Failed to fetch replies:", error);
-    }
-  };
+  // const fetchReplies = async (ticketId: number) => {
+  //   try {
 
-  const handleCreateTicket = async (ticketData: {
-    subject: string;
-    details: string;
-    attachments: [];
-  }) => {
-    try {
-      await addTicket(
-        ticketData.subject,
-        ticketData.details,
-        ticketData.attachments
-      );
-      fetchTickets();
-      setIsCreateDialogOpen(false);
-    } catch (error) {
-      console.error("Failed to create ticket:", error);
-    }
-  };
+  //     console.log(res);
+  //     setReplies(res.data.data || []);
+  //   } catch (error) {
+  //     console.error("Failed to fetch replies:", error);
+  //   }
+  // };
+
+  
 
   const handleDeleteTicket = async (ticketId: number) => {
     try {
@@ -154,7 +140,9 @@ export default function TicketsPage() {
     try {
       await addReply(selectedTicket.id, replyMessage);
       setReplyMessage("");
-      fetchReplies(selectedTicket.id);
+      fetchTickets();
+      setSelectedTicket(null);
+      // fetchReplies(selectedTicket.id);
     } catch (error) {
       console.error("Failed to add reply:", error);
     }
@@ -297,26 +285,23 @@ export default function TicketsPage() {
               <h3 className="font-semibold mb-4">Conversation</h3>
 
               <div className="space-y-4 mb-6">
-                {replies.length > 0 ? (
-                  replies.map((reply) => (
+                {selectedTicket.ticketreplies.length > 0 ? (
+                  selectedTicket.ticketreplies.map((reply) => (
                     <div
                       key={reply.id}
-                      className={`p-4 rounded-lg ${
-                        reply.is_admin
-                          ? "bg-blue-50 border border-blue-200"
-                          : "bg-gray-50 border border-gray-200"
+                      className={`p-4 rounded-lg "bg-blue-50 border border-blue-200"
+                         
                       }`}
                     >
                       <div className="flex justify-between items-start mb-2">
-                        <span className="font-medium">
-                          {reply.is_admin ? "Support Agent" : "You"}
-                        </span>
+                        <span className="font-medium">{reply.user.name}</span>
+                        <span className="font-medium">{reply.user.email}</span>
                         <span className="text-sm text-muted-foreground">
                           {formatDate(reply.created_at)}
                         </span>
                       </div>
                       <p className="text-muted-foreground whitespace-pre-wrap">
-                        {reply.message}
+                        {reply.reply}
                       </p>
                     </div>
                   ))
@@ -404,14 +389,8 @@ export default function TicketsPage() {
                     <TableCell>
                       <div className="max-w-xs truncate">{ticket.subject}</div>
                     </TableCell>
-                    <TableCell>
-                      <Badge
-                        variant={getStatusVariant(ticket.status)}
-                        className="flex items-center gap-1 w-fit"
-                      >
-                        {getStatusIcon(ticket.status)}
-                        {ticket.status_string}
-                      </Badge>
+                    <TableCell className=" font-semibold">
+                      {ticket.status}
                     </TableCell>
                     <TableCell>
                       {new Date(ticket.created_at).toLocaleDateString()}
@@ -425,7 +404,7 @@ export default function TicketsPage() {
                         >
                           <Eye className="h-4 w-4" />
                         </Button>
-                        <AlertDialog>
+                        {/* <AlertDialog>
                           <AlertDialogTrigger asChild>
                             <Button variant="destructive" size="sm">
                               <Trash2 className="h-4 w-4" />
@@ -448,7 +427,7 @@ export default function TicketsPage() {
                               </AlertDialogAction>
                             </AlertDialogFooter>
                           </AlertDialogContent>
-                        </AlertDialog>
+                        </AlertDialog> */}
                       </div>
                     </TableCell>
                   </TableRow>
@@ -462,7 +441,7 @@ export default function TicketsPage() {
       <CreateTicketDialog
         open={isCreateDialogOpen}
         onOpenChange={setIsCreateDialogOpen}
-        onSubmit={handleCreateTicket}
+        fetchTickets={fetchTickets}
       />
     </div>
   );

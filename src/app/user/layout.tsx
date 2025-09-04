@@ -3,8 +3,8 @@ import { UserSidebar } from "@/components/shared/user-menu";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "My App",
-  description: "A modern web application built with Next.js",
+  title: "User",
+  description: "User info",
 };
 
 export default function RootLayout({

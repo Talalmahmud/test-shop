@@ -1,7 +1,5 @@
-import ProductDetailClient from "@/components/shared/product-details";
 import ProductDetailClient2 from "@/components/shared/product-details2";
-import ProductSlider2 from "@/components/shared/slider2";
-import ProductSliderWithoutFilter from "@/components/shared/sliderwithoutfilter";
+
 
 export default async function Page({
   params,

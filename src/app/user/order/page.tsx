@@ -1,4 +1,6 @@
 // components/orders-table-simple.tsx
+"use client";
+import { useEffect, useState } from "react";
 import {
   Table,
   TableBody,
@@ -26,11 +28,28 @@ interface Order {
   };
 }
 
-interface OrdersTableSimpleProps {
-  orders: Order[];
-}
+export default function OrdersTableSimple() {
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-export default async function OrdersTableSimple() {
+  useEffect(() => {
+    const fetchOrders = async () => {
+      try {
+        setLoading(true);
+        const ordersData = await getOrder();
+        setOrders(ordersData.data || []);
+      } catch (err) {
+        setError("Failed to load orders");
+        console.error("Error fetching orders:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchOrders();
+  }, []);
+
   // Get status badge variant
   const getPaymentStatusVariant = (status: string) => {
     switch (status.toLowerCase()) {
@@ -58,10 +77,33 @@ export default async function OrdersTableSimple() {
     }
   };
 
-  const orders = await getOrder();
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <div className="text-center">Loading orders...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <div className="text-center text-destructive">{error}</div>
+      </div>
+    );
+  }
+
+  if (orders.length === 0) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <div className="text-center text-muted-foreground">No orders found</div>
+      </div>
+    );
+  }
+
   return (
     <div className="">
-      <p className=" text-center py-4 font-bold text-2xl">Order List</p>
+      <p className="text-center py-4 font-bold text-2xl">Order List</p>
       <Table>
         <TableHeader>
           <TableRow>
@@ -73,7 +115,7 @@ export default async function OrdersTableSimple() {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {orders.data.map((order: Order) => (
+          {orders.map((order) => (
             <TableRow key={order.id}>
               <TableCell className="font-medium">#{order.code}</TableCell>
               <TableCell>{order.date}</TableCell>

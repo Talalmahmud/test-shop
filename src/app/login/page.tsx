@@ -10,7 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { userLogin } from "../action";
+import { userLogin, userSignUp } from "../action";
 
 // ✅ Zod schemas
 const signInSchema = z.object({
@@ -23,7 +23,6 @@ const signUpSchema = z.object({
   name: z.string().min(2),
   email: z.string(),
   password: z.string().min(6),
-  newsletter: z.boolean(),
 });
 
 type SignInFormValues = z.infer<typeof signInSchema>;
@@ -49,7 +48,6 @@ export default function AuthPage() {
     formState: { errors: errorsSignUp },
   } = useForm<SignUpFormValues>({
     resolver: zodResolver(signUpSchema),
-    defaultValues: { newsletter: false },
   });
 
   const onSignIn = async (data: SignInFormValues) => {
@@ -61,8 +59,9 @@ export default function AuthPage() {
     );
   };
 
-  const onSignUp = (data: SignUpFormValues) => {
+  const onSignUp = async (data: SignUpFormValues) => {
     console.log("Sign Up Data:", data);
+    const resDarta = await userSignUp(data.name, data.email, data.password);
   };
 
   return (
@@ -144,20 +143,7 @@ export default function AuthPage() {
                 </p>
               )}
             </div>
-            <div className="flex items-center space-x-2">
-              <Controller
-                name="newsletter"
-                control={controlSignUp}
-                render={({ field }) => (
-                  <Checkbox
-                    id="newsletter"
-                    checked={field.value}
-                    onCheckedChange={field.onChange}
-                  />
-                )}
-              />
-              <Label htmlFor="newsletter">Subscribe to newsletter</Label>
-            </div>
+
             <Button type="submit" className="w-full">
               Sign Up
             </Button>

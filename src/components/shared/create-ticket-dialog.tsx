@@ -14,26 +14,41 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Upload, X } from "lucide-react";
+import { addTicket } from "@/services/ticket";
 
 interface CreateTicketDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onSubmit: (data: {
-    subject: string;
-    details: string;
-    attachments: string[] | [];
-  }) => void;
+  fetchTickets: () => void;
 }
 
 export function CreateTicketDialog({
   open,
   onOpenChange,
-  onSubmit,
+  fetchTickets,
 }: CreateTicketDialogProps) {
   const [subject, setSubject] = useState("");
   const [details, setDetails] = useState("");
   const [attachments, setAttachments] = useState<File[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleCreateTicket = async (ticketData: {
+    subject: string;
+    details: string;
+    attachments: File[];
+  }) => {
+    try {
+      await addTicket(
+        ticketData.subject,
+        ticketData.details,
+        ticketData.attachments
+      );
+      fetchTickets();
+      onOpenChange(false);
+    } catch (error) {
+      console.error("Failed to create ticket:", error);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -45,21 +60,11 @@ export function CreateTicketDialog({
     setIsSubmitting(true);
 
     try {
-      // Upload attachments if any
-      const attachmentUrls: string[] = [];
-
-      for (const file of attachments) {
-        // Simulate file upload - replace with actual upload logic
-        const url = await new Promise<string>((resolve) =>
-          setTimeout(() => resolve(URL.createObjectURL(file)), 500)
-        );
-        attachmentUrls.push(url);
-      }
-
-      onSubmit({
+      // Pass the File objects directly to handleCreateTicket
+      handleCreateTicket({
         subject: subject.trim(),
         details: details.trim(),
-        attachments: attachmentUrls.length > 0 ? attachmentUrls : [],
+        attachments: attachments, // Pass the File objects directly
       });
 
       // Reset form
@@ -76,7 +81,16 @@ export function CreateTicketDialog({
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (files) {
-      setAttachments((prev) => [...prev, ...Array.from(files)]);
+      const validFiles = Array.from(files).filter((file) => {
+        // Example: Limit to 5MB
+        if (file.size > 2 * 1024 * 1024) {
+          alert(`${file.name} is too large. Maximum size is 5MB.`);
+          return false;
+        }
+        return true;
+      });
+
+      setAttachments((prev) => [...prev, ...validFiles]);
     }
   };
 

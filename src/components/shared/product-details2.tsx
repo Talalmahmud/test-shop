@@ -9,7 +9,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { addCart } from "@/services/cart";
+import { useCart } from "../CartContext";
 
 export interface ProductResponse {
   success: boolean;
@@ -225,6 +225,8 @@ export interface Seo {
 }
 
 export default function ProductDetailClient({ product }: { product: Product }) {
+  const { addToCart } = useCart();
+
   const [selectedColor, setSelectedColor] = useState<string>(
     product.specifications.colors?.[0]?.hex_code || ""
   );
@@ -267,7 +269,7 @@ export default function ProductDetailClient({ product }: { product: Product }) {
       return;
     }
     // You can call your API/cart context here
-    const res = await addCart(product.id, selectedVariant.variant, quantity);
+    const res = await addToCart(product.id, selectedVariant.variant, quantity);
     console.log(res);
   };
 

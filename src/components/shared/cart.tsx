@@ -20,6 +20,7 @@ import {
 } from "@/services/cart";
 import Link from "next/link";
 import { Button } from "../ui/button";
+import { useCart } from "../CartContext";
 
 // Type from your backend response
 interface CartItem {
@@ -49,62 +50,14 @@ interface CartPrice {
 }
 
 const Cart = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [cartItems, setCartItems] = useState<CartItem[]>([]);
-  const [cartPrice, setCartPrice] = useState<CartPrice>({
-    sub_total: "",
-    tax: "",
-    shipping_cost: "",
-    discount: "",
-    grand_total: "",
-    grand_total_value: 0,
-    coupon_code: null,
-    coupon_applied: false,
-  });
-  // Update quantity with rules
-  const updateQuantity = async (id: number, newQuantity: number) => {
-    const res = await updateQuantityCart(id, newQuantity);
-    fetchData();
-    fetchPriceData();
-  };
+    const { isOpen, closeCart, cartItems, cartPrice, updateQuantity, removeItem } = useCart();
 
-  const fetchData = async () => {
-    try {
-      const res = await getCart();
-      console.log(res);
-      if (res.length > 0) {
-        setCartItems(res[0].cart_items);
-      } else {
-        setCartItems([]);
-      }
-      // assuming `res` is an array of cart items
-    } catch (err) {
-      console.error("Failed to load cart", err);
-    }
-  };
+ 
 
-  const fetchPriceData = async () => {
-    try {
-      const res = await getCartSummary();
-      setCartPrice(res);
-    } catch (err) {
-      console.error("Failed to load cart", err);
-    }
-  };
-
-  const removeItem = async (id: number) => {
-    const res = await deleteCart(id);
-    fetchData();
-  };
-
-  useEffect(() => {
-    fetchData();
-    fetchPriceData();
-  }, []);
-
+  
   return (
     <>
-      <Sheet open={isOpen} onOpenChange={setIsOpen}>
+      <Sheet open={isOpen} onOpenChange={closeCart}>
         <SheetTrigger className="h-8 px-4 font-bold text-[14px] bg-gray-200 rounded-full flex justify-center gap-[2px] items-center">
           <span className="hidden md:block">Cart</span> ({cartItems.length})
           <span className="block md:hidden h-2 w-2 bg-black rounded-full"></span>

@@ -1,5 +1,6 @@
 "use server";
 
+import { getToken } from "@/services/token";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
@@ -31,6 +32,85 @@ export const userLogin = async (
   redirect("/user");
 };
 
+export const userSignUp = async (
+  name: string,
+  email: string,
+  password: string
+) => {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/auth/signup`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      email_or_phone: email,
+      password,
+      name,
+      register_by: "email",
+    }),
+  });
+  console.log(res);
+
+  if (!res.ok) console.log(`Signup failed: ${res.status}`);
+
+  const resData = await res.json();
+
+  console.log(resData);
+};
+
+export const updateUserProfile = async (
+  name: string,
+  phone: string,
+  address: string
+) => {
+  const token = await getToken();
+
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_BASE_URL}/profile/update`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        name,
+        phone,
+        address,
+      }),
+    }
+  );
+  console.log(res);
+
+  if (!res.ok) console.log(`Password Changed failed: ${res.status}`);
+
+  const resData = await res.json();
+
+  console.log(resData);
+};
+
+export const userPasswordChange = async (password: string) => {
+  const token = await getToken();
+
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_BASE_URL}/profile/update`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        password,
+      }),
+    }
+  );
+  console.log(res);
+
+  if (!res.ok) console.log(`Password Changed failed: ${res.status}`);
+
+  const resData = await res.json();
+
+  console.log(resData);
+};
 export const userLogOut = async () => {
   const cookie = await cookies();
 

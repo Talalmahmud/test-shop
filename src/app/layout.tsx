@@ -4,6 +4,7 @@ import "./globals.css";
 import Header from "@/components/shared/header";
 import Notice from "@/components/shared/notice";
 import Footer from "@/components/shared/footer";
+import { CartProvider } from "@/components/CartContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -30,10 +31,12 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased scrollbar-hide`}
       >
-        <Notice />
-        <Header />
-        {children}
-        <Footer />
+        <CartProvider>
+          <Notice />
+          <Header />
+          {children}
+          <Footer />
+        </CartProvider>
       </body>
     </html>
   );

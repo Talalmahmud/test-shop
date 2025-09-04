@@ -21,10 +21,18 @@ import {
   Mail,
   Phone,
   MapPin,
-  Globe,
-  Building,
+  Plus,
+  Trash2,
+  MoreVertical,
+  Check,
 } from "lucide-react";
-import { getUserProfile } from "@/services/user";
+import {
+  addShippingAddress,
+  getShippingAddresses,
+  getUserProfile,
+  updateShippingAddress,
+} from "@/services/user";
+import { updateUserProfile } from "../action";
 
 interface UserProfile {
   id: number;
@@ -40,7 +48,7 @@ interface UserProfile {
   verification_code: string | null;
   new_email_verificiation_code: string | null;
   device_token: string | null;
-  avatar: string | null;
+  avatar?: string | null;
   avatar_original: string | null;
   address: string | null;
   country: string | null;
@@ -48,7 +56,7 @@ interface UserProfile {
   city: string | null;
   postal_code: string | null;
   phone: string | null;
-  balance: number;
+  balance: number | 0;
   banned: number;
   referral_code: string | null;
   customer_package_id: number | null;
@@ -57,11 +65,63 @@ interface UserProfile {
   updated_at: string;
 }
 
+interface ShippingAddress {
+  id: number;
+  user_id: number;
+  address: string;
+  country_id: number;
+  state_id: number;
+  city_id: number;
+  postal_code: string;
+  phone: string;
+  latitude: string;
+  longitude: string;
+  is_default: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+// Mock data for countries, states, and cities
+const countries = [
+  { id: 1, name: "United States" },
+  { id: 2, name: "Canada" },
+  { id: 3, name: "United Kingdom" },
+];
+
+const states = [
+  { id: 1, country_id: 1, name: "California" },
+  { id: 2, country_id: 1, name: "New York" },
+  { id: 3, country_id: 1, name: "Texas" },
+  { id: 4, country_id: 2, name: "Ontario" },
+  { id: 5, country_id: 2, name: "Quebec" },
+  { id: 6, country_id: 3, name: "England" },
+];
+
+const cities = [
+  { id: 1, state_id: 1, name: "Los Angeles" },
+  { id: 2, state_id: 1, name: "San Francisco" },
+  { id: 3, state_id: 2, name: "New York City" },
+  { id: 4, state_id: 2, name: "Buffalo" },
+  { id: 5, state_id: 3, name: "Houston" },
+  { id: 6, state_id: 3, name: "Austin" },
+  { id: 7, state_id: 4, name: "Toronto" },
+  { id: 8, state_id: 4, name: "Ottawa" },
+  { id: 9, state_id: 5, name: "Montreal" },
+  { id: 10, state_id: 5, name: "Quebec City" },
+  { id: 11, state_id: 6, name: "London" },
+  { id: 12, state_id: 6, name: "Manchester" },
+];
+
 export default function ProfilePage() {
   const [isEditing, setIsEditing] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const [showAddressForm, setShowAddressForm] = useState(false);
+  const [editingAddress, setEditingAddress] = useState<ShippingAddress | null>(
+    null
+  );
+  const [activeMenu, setActiveMenu] = useState<number | null>(null);
 
-  // Mock user data based on your structure
   const [user, setUser] = useState<UserProfile>({
     id: 73,
     referred_by: null,
@@ -70,31 +130,77 @@ export default function ProfilePage() {
     refresh_token: null,
     access_token: null,
     user_type: "customer",
-    name: "sabrina",
-    email: "01817291787@gmail.com",
-    email_verified_at: "2022-11-30 20:54:26",
+    name: "",
+    email: "",
+    email_verified_at: "",
     verification_code: null,
-    new_email_verificiation_code: "DEAAD4rPI3xGceg2D9Ot3skSEN8BZld5",
+    new_email_verificiation_code: "",
     device_token: null,
-    avatar:
-      "https://lh3.googleusercontent.com/-7OnRtLyua5Q/AAAAAAAAAAI/AAAAAAAADRk/VqWKMl4f8CI/photo.jpg?sz=50",
+    avatar: null,
     avatar_original: null,
-    address: "house 3, road 3, sector 5. uttara",
-    country: "Us",
+    address: "",
+    country: "",
     state: null,
-    city: "inside dhaka",
+    city: "",
     postal_code: null,
-    phone: "01740816676",
+    phone: "",
     balance: 0,
     banned: 0,
     referral_code: null,
     customer_package_id: null,
     remaining_uploads: 0,
     created_at: null,
-    updated_at: "2025-08-30T11:48:11.000000Z",
+    updated_at: "",
   });
 
-  const [formData, setFormData] = useState<UserProfile>(user);
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    address: "",
+  });
+
+  const [addressForm, setAddressForm] = useState({
+    address: "",
+    postal_code: "",
+    phone: "",
+  });
+
+  // Mock shipping addresses data with the new structure
+  const [shippingAddresses, setShippingAddresses] = useState<ShippingAddress[]>(
+    [
+      {
+        id: 1,
+        user_id: 73,
+        address: "123 Main Street, Apt 4B",
+        country_id: 1,
+        state_id: 2,
+        city_id: 3,
+        postal_code: "10001",
+        phone: "+1 (555) 123-4567",
+        latitude: "40.7128",
+        longitude: "-74.0060",
+        is_default: true,
+        created_at: "2023-01-15T10:30:00Z",
+        updated_at: "2023-01-15T10:30:00Z",
+      },
+      {
+        id: 2,
+        user_id: 73,
+        address: "456 Office Park, Suite 300",
+        country_id: 1,
+        state_id: 2,
+        city_id: 4,
+        postal_code: "10002",
+        phone: "+1 (555) 987-6543",
+        latitude: "40.7282",
+        longitude: "-73.7942",
+        is_default: false,
+        created_at: "2023-03-22T14:45:00Z",
+        updated_at: "2023-03-22T14:45:00Z",
+      },
+    ]
+  );
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -106,28 +212,139 @@ export default function ProfilePage() {
     }));
   };
 
+  const handleAddressInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
+    setAddressForm((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
   const handleSave = async () => {
-    setIsLoading(true);
+    setIsSaving(true);
 
     try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      // Call the update API
+      const updatedUser = await updateUserProfile(
+        formData.name,
+        formData.phone,
+        formData.address
+      );
 
-      // Update user data
-      setUser(formData);
+      // Update the user state with the response
+      fetchData();
       setIsEditing(false);
 
-      console.log("Profile updated successfully:", formData);
+      alert("Profile updated successfully");
     } catch (error) {
       console.error("Failed to update profile:", error);
+      alert("Failed to update profile");
     } finally {
-      setIsLoading(false);
+      setIsSaving(false);
     }
   };
 
   const handleCancel = () => {
-    setFormData(user);
+    // Reset form data to current user data
+    setFormData({
+      name: user.name,
+      email: user.email,
+      phone: user.phone || "",
+      address: user.address || "",
+    });
     setIsEditing(false);
+  };
+
+  const handleAddAddress = () => {
+    setEditingAddress(null);
+    setAddressForm({
+      address: "",
+      postal_code: "",
+      phone: user.phone || "",
+    });
+    setShowAddressForm(true);
+    setActiveMenu(null);
+  };
+
+  const handleEditAddress = (address: ShippingAddress) => {
+    setEditingAddress(address);
+    setAddressForm({
+      address: address.address,
+      postal_code: address.postal_code,
+      phone: address.phone,
+    });
+    setShowAddressForm(true);
+    setActiveMenu(null);
+  };
+
+  const handleSetDefaultAddress = (id: number) => {
+    setShippingAddresses((prev) =>
+      prev.map((addr) => ({
+        ...addr,
+        is_default: addr.id === id,
+      }))
+    );
+    alert("Default address updated successfully");
+    setActiveMenu(null);
+  };
+
+  const handleSaveAddress = async () => {
+    if (editingAddress) {
+      // Update existing address
+      const newAddress = {
+        id:editingAddress.id,
+        address: editingAddress.address,
+        country_id: 1, // Default country_id
+        state_id: 5, // Default state_id
+        city_id: 10, // Default city_id
+        postal_code: editingAddress.postal_code,
+        phone: editingAddress.phone,
+       
+      };
+
+      const resEditDdata = await updateShippingAddress(
+     
+        newAddress
+      );
+      fetchAddress();
+
+      alert("Address updated successfully");
+    } else {
+      // Add new address - using default values for country, state, city, and coordinates
+      const newAddress = {
+        address: addressForm.address,
+        country_id: 1, // Default country_id
+        state_id: 5, // Default state_id
+        city_id: 10, // Default city_id
+        postal_code: addressForm.postal_code,
+        phone: addressForm.phone,
+        latitude: "40.7128", // Default latitude
+        longitude: "-74.0060", // Default longitude
+      };
+      const resDdata = await addShippingAddress(newAddress);
+      fetchAddress();
+      alert("Address added successfully");
+    }
+
+    setShowAddressForm(false);
+    setEditingAddress(null);
+  };
+
+  const handleDeleteAddress = (id: number) => {
+    setShippingAddresses((prev) => prev.filter((addr) => addr.id !== id));
+    alert("Address deleted successfully");
+    setActiveMenu(null);
+  };
+
+  const handleCancelAddress = () => {
+    setShowAddressForm(false);
+    setEditingAddress(null);
+  };
+
+  const toggleMenu = (id: number) => {
+    setActiveMenu(activeMenu === id ? null : id);
   };
 
   const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -135,10 +352,7 @@ export default function ProfilePage() {
     if (file) {
       const reader = new FileReader();
       reader.onload = (e) => {
-        setFormData((prev) => ({
-          ...prev,
-          avatar: e.target?.result as string,
-        }));
+        setUser((prev) => ({ ...prev, avatar: e.target?.result as string }));
       };
       reader.readAsDataURL(file);
     }
@@ -153,17 +367,63 @@ export default function ProfilePage() {
       .slice(0, 2);
   };
 
+  const getCountryName = (countryId: number) => {
+    return (
+      countries.find((country) => country.id === countryId)?.name ||
+      "Unknown Country"
+    );
+  };
+
+  const getStateName = (stateId: number) => {
+    return (
+      states.find((state) => state.id === stateId)?.name || "Unknown State"
+    );
+  };
+
+  const getCityName = (cityId: number) => {
+    return cities.find((city) => city.id === cityId)?.name || "Unknown City";
+  };
+
   const fetchData = async () => {
+    setIsLoading(true);
     try {
       const res = await getUserProfile();
       setUser(res);
+      // Initialize form data with user data
+      setFormData({
+        name: res.name,
+        email: res.email,
+        phone: res.phone || "",
+        address: res.address || "",
+      });
     } catch (err) {
-      console.error("Failed to load cart", err);
+      console.error("Failed to load profile", err);
+      alert("Failed to load profile");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const fetchAddress = async () => {
+    setIsLoading(true);
+    try {
+      const res = await getShippingAddresses();
+      setShippingAddresses(res);
+      // Initialize form data with user data
+    } catch (err) {
+      console.error("Failed to load profile", err);
+      alert("Failed to load profile");
+    } finally {
+      setIsLoading(false);
     }
   };
 
   useEffect(() => {
     fetchData();
+  }, []);
+
+  useEffect(() => {
+    fetchAddress();
   }, []);
 
   const formatDate = (dateString: string | null) => {
@@ -174,6 +434,14 @@ export default function ProfilePage() {
       day: "numeric",
     });
   };
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="text-center">Loading profile...</div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -198,16 +466,16 @@ export default function ProfilePage() {
             <Button
               variant="outline"
               onClick={handleCancel}
-              disabled={isLoading}
+              disabled={isSaving}
             >
               Cancel
             </Button>
             <Button
               onClick={handleSave}
-              disabled={isLoading}
+              disabled={isSaving}
               className="flex items-center gap-2"
             >
-              {isLoading ? "Saving..." : "Save Changes"}
+              {isSaving ? "Saving..." : "Save Changes"}
               <Save className="h-4 w-4" />
             </Button>
           </div>
@@ -225,9 +493,15 @@ export default function ProfilePage() {
             {/* Avatar Upload */}
             <div className="flex items-center gap-4">
               <Avatar className="h-20 w-20">
-                <AvatarImage src={formData.avatar || ""} alt={formData.name} />
+                <AvatarImage
+                  src={
+                    user.avatar ||
+                    "https://lh3.googleusercontent.com/-7OnRtLyua5Q/AAAAAAAAAAI/AAAAAAAADRk/VqWKMl4f8CI/photo.jpg?sz=50"
+                  }
+                  alt={user.name}
+                />
                 <AvatarFallback className="text-2xl bg-primary text-primary-foreground">
-                  {getInitials(formData.name)}
+                  {getInitials(user.name)}
                 </AvatarFallback>
               </Avatar>
 
@@ -303,7 +577,7 @@ export default function ProfilePage() {
                 <Input
                   id="phone"
                   name="phone"
-                  value={formData.phone || ""}
+                  value={formData.phone}
                   onChange={handleInputChange}
                   placeholder="Enter your phone number"
                 />
@@ -311,16 +585,7 @@ export default function ProfilePage() {
                 <p className="text-sm">{user.phone || "Not provided"}</p>
               )}
             </div>
-          </CardContent>
-        </Card>
 
-        {/* Address Information Card */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Address Information</CardTitle>
-            <CardDescription>Your location details</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
             {/* Address */}
             <div className="space-y-2">
               <Label htmlFor="address" className="flex items-center gap-2">
@@ -331,109 +596,237 @@ export default function ProfilePage() {
                 <Textarea
                   id="address"
                   name="address"
-                  value={formData.address || ""}
+                  value={formData.address}
                   onChange={handleInputChange}
-                  placeholder="Enter your complete address"
+                  placeholder="Enter your address"
                   rows={3}
                 />
               ) : (
                 <p className="text-sm">{user.address || "Not provided"}</p>
               )}
             </div>
+          </CardContent>
+        </Card>
 
-            {/* City */}
-            <div className="space-y-2">
-              <Label htmlFor="city" className="flex items-center gap-2">
-                <Building className="h-4 w-4" />
-                City
-              </Label>
-              {isEditing ? (
-                <Input
-                  id="city"
-                  name="city"
-                  value={formData.city || ""}
-                  onChange={handleInputChange}
-                  placeholder="Enter your city"
-                />
-              ) : (
-                <p className="text-sm">{user.city || "Not provided"}</p>
-              )}
-            </div>
+        {/* Account Information Card (Read-only) */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Account Information</CardTitle>
+            <CardDescription>Your account details and status</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <Label>User Type</Label>
+                <p className="text-sm capitalize text-muted-foreground">
+                  {user.user_type}
+                </p>
+              </div>
 
-            {/* Country */}
-            <div className="space-y-2">
-              <Label htmlFor="country" className="flex items-center gap-2">
-                <Globe className="h-4 w-4" />
-                Country
-              </Label>
-              {isEditing ? (
-                <Input
-                  id="country"
-                  name="country"
-                  value={formData.country || ""}
-                  onChange={handleInputChange}
-                  placeholder="Enter your country"
-                />
-              ) : (
-                <p className="text-sm">{user.country || "Not provided"}</p>
+              <div className="space-y-2">
+                <Label>Account Balance</Label>
+                <p className="text-sm text-muted-foreground">${user.balance}</p>
+              </div>
+
+              {/* <div className="space-y-2">
+                <Label>Account Status</Label>
+                <p className="text-sm text-muted-foreground">
+                  {user.banned ? (
+                    <span className="text-red-600">Banned</span>
+                  ) : (
+                    <span className="text-green-600">Active</span>
+                  )}
+                </p>
+              </div> */}
+
+              <div className="space-y-2">
+                <Label>Member Since</Label>
+                <p className="text-sm text-muted-foreground">
+                  {formatDate(user.created_at)}
+                </p>
+              </div>
+
+              <div className="space-y-2">
+                <Label>Last Updated</Label>
+                <p className="text-sm text-muted-foreground">
+                  {formatDate(user.updated_at)}
+                </p>
+              </div>
+
+              {user.referral_code && (
+                <div className="space-y-2">
+                  <Label>Referral Code</Label>
+                  <p className="text-sm text-muted-foreground">
+                    {user.referral_code}
+                  </p>
+                </div>
               )}
             </div>
           </CardContent>
         </Card>
       </div>
 
-      {/* Account Information Card */}
+      {/* Shipping Addresses Section */}
       <Card>
-        <CardHeader>
-          <CardTitle>Account Information</CardTitle>
-          <CardDescription>Your account details and status</CardDescription>
+        <CardHeader className="flex flex-row items-center justify-between">
+          <div>
+            <CardTitle>Shipping Addresses</CardTitle>
+            <CardDescription>
+              Manage your shipping addresses for orders
+            </CardDescription>
+          </div>
+          <Button
+            onClick={handleAddAddress}
+            className="flex items-center gap-2"
+          >
+            <Plus className="h-4 w-4" />
+            Add Address
+          </Button>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div className="space-y-2">
-              <Label>User Type</Label>
-              <p className="text-sm capitalize text-muted-foreground">
-                {user.user_type}
-              </p>
-            </div>
-
-            <div className="space-y-2">
-              <Label>Account Balance</Label>
-              <p className="text-sm text-muted-foreground">
-                ${user.balance.toFixed(2)}
-              </p>
-            </div>
-
-            <div className="space-y-2">
-              <Label>Account Status</Label>
-              <p className="text-sm text-muted-foreground">
-                {user.banned ? "Banned" : "Active"}
-              </p>
-            </div>
-
-            <div className="space-y-2">
-              <Label>Member Since</Label>
-              <p className="text-sm text-muted-foreground">
-                {formatDate(user.created_at)}
-              </p>
-            </div>
-
-            <div className="space-y-2">
-              <Label>Last Updated</Label>
-              <p className="text-sm text-muted-foreground">
-                {formatDate(user.updated_at)}
-              </p>
-            </div>
-
-            {user.referral_code && (
-              <div className="space-y-2">
-                <Label>Referral Code</Label>
-                <p className="text-sm text-muted-foreground">
-                  {user.referral_code}
-                </p>
+          {showAddressForm ? (
+            <div className="border rounded-lg p-4 mb-6">
+              <h3 className="text-lg font-medium mb-4">
+                {editingAddress ? "Edit Address" : "Add New Address"}
+              </h3>
+              <div className="grid grid-cols-1 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="address">Address</Label>
+                  <Textarea
+                    id="address"
+                    name="address"
+                    value={addressForm.address}
+                    onChange={handleAddressInputChange}
+                    placeholder="Full address"
+                    rows={3}
+                  />
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="postal_code">Postal Code</Label>
+                    <Input
+                      id="postal_code"
+                      name="postal_code"
+                      value={addressForm.postal_code}
+                      onChange={handleAddressInputChange}
+                      placeholder="Postal code"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="phone">Phone Number</Label>
+                    <Input
+                      id="phone"
+                      name="phone"
+                      value={addressForm.phone}
+                      onChange={handleAddressInputChange}
+                      placeholder="Phone number"
+                    />
+                  </div>
+                </div>
+                <div className="space-y-2 p-2 bg-muted rounded-md">
+                  <p className="text-sm text-muted-foreground">
+                    Country, State, City, and Coordinates are set to default
+                    values and cannot be changed.
+                  </p>
+                </div>
               </div>
-            )}
-          </div>
+              <div className="flex gap-2 mt-4">
+                <Button onClick={handleSaveAddress}>
+                  {editingAddress ? "Update Address" : "Add Address"}
+                </Button>
+                <Button variant="outline" onClick={handleCancelAddress}>
+                  Cancel
+                </Button>
+              </div>
+            </div>
+          ) : null}
+
+          {shippingAddresses.length === 0 ? (
+            <div className="text-center py-8">
+              <MapPin className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+              <h3 className="text-lg font-medium mb-2">No addresses yet</h3>
+              <p className="text-muted-foreground mb-4">
+                Add your first shipping address to make checkout faster
+              </p>
+              <Button onClick={handleAddAddress}>Add Your First Address</Button>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {shippingAddresses.map((address) => (
+                <div
+                  key={address.id}
+                  className="border rounded-lg p-4 relative"
+                >
+                  {address.is_default && (
+                    <span className="absolute bottom-2 right-2 bg-primary text-primary-foreground text-xs px-2 py-1 rounded">
+                      Default
+                    </span>
+                  )}
+
+                  <div className="flex justify-between items-start mb-2">
+                    <h3 className="font-medium">
+                      {getCountryName(address.country_id)} -{" "}
+                      {getStateName(address.state_id)}
+                    </h3>
+                    <div className="relative">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8"
+                        onClick={() => toggleMenu(address.id)}
+                      >
+                        <MoreVertical className="h-4 w-4" />
+                      </Button>
+
+                      {activeMenu === address.id && (
+                        <div className="absolute right-0 top-10 bg-background border rounded-md shadow-lg z-10 w-32">
+                          <button
+                            className="w-full text-left px-3 py-2 text-sm hover:bg-muted flex items-center"
+                            onClick={() => handleSetDefaultAddress(address.id)}
+                          >
+                            {address.is_default ? (
+                              <Check className="h-4 w-4 mr-2" />
+                            ) : (
+                              <span className="w-4 h-4 mr-2"></span>
+                            )}
+                            Default
+                          </button>
+                          <button
+                            className="w-full text-left px-3 py-2 text-sm hover:bg-muted flex items-center"
+                            onClick={() => handleEditAddress(address)}
+                          >
+                            <Edit className="h-4 w-4 mr-2" />
+                            Edit
+                          </button>
+                          <button
+                            className="w-full text-left px-3 py-2 text-sm hover:bg-muted text-destructive flex items-center"
+                            onClick={() => handleDeleteAddress(address.id)}
+                          >
+                            <Trash2 className="h-4 w-4 mr-2" />
+                            Delete
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  <p className="text-sm mb-2">
+                    {address.address}
+                    <br />
+                    {getCityName(address.city_id)},{" "}
+                    {getStateName(address.state_id)} {address.postal_code}
+                    <br />
+                    {getCountryName(address.country_id)}
+                    <br />
+                    {address.phone}
+                  </p>
+                  <div className="text-xs text-muted-foreground mt-2">
+                    Coordinates: {address.latitude}, {address.longitude}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>
