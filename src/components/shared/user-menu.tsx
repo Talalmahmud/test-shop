@@ -47,21 +47,21 @@ export function UserSidebar({ user }: UserSidebarProps) {
       href: "/user/order",
       icon: ShoppingBag,
     },
-    {
-      label: "Wishlist",
-      href: "/wishlist",
-      icon: Heart,
-    },
+    // {
+    //   label: "Wishlist",
+    //   href: "/wishlist",
+    //   icon: Heart,
+    // },
     {
       label: "Support Tickets",
       href: "/user/tickets",
       icon: Ticket,
     },
-    {
-      label: "Settings",
-      href: "/settings",
-      icon: Settings,
-    },
+    // {
+    //   label: "Settings",
+    //   href: "/settings",
+    //   icon: Settings,
+    // },
   ];
 
   const handleLogout = async () => {

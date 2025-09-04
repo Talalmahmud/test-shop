@@ -55,10 +55,10 @@ const Header = async () => {
               </NavigationMenuTrigger>
               <NavigationMenuContent>
                 <div className="w-screen bg-white p-6 scrollbar-hide rounded-md">
-                  <div className="grid grid-cols-2 gap-6">
+                  <div className="flex flex-wrap gap-6 lg:gap-10">
                     {category.children.map((subCategory) => (
                       <div key={subCategory.id}>
-                        <h3 className="font-semibold mb-3 text-gray-800 border-b pb-1">
+                        <h3 className="font-semibold mb-3 text-gray-800 ">
                           <Link
                             href={`/search?category_slug=${subCategory.slug}`}
                             className="hover:text-blue-600"
@@ -83,7 +83,7 @@ const Header = async () => {
                       </div>
                     ))}
                   </div>
-                  <div className="mt-6 pt-4 border-t">
+                  <div className="mt-6 pt-4">
                     <Link
                       href={`/search?category_slug=${category.slug}`}
                       className="text-blue-600 hover:text-blue-800 font-medium"
