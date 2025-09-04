@@ -112,7 +112,13 @@ const Footer = async () => {
                 <h3 className="font-semibold text-sm mb-4 uppercase tracking-wider">
                   Shop with us
                 </h3>
-                <Image src={"/bkash.svg"} alt="bkash" height={80} width={100} />
+                <Image
+                  src={"/bkash.svg"}
+                  alt="bkash"
+                  height={80}
+                  width={100}
+                  className=" bg-white"
+                />
               </div>
               {/* {footerSections.map((section, index) => (
                 <div key={index} className="mb-6">

@@ -10,6 +10,8 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { useCart } from "../CartContext";
+import { getToken } from "@/services/token";
+import Link from "next/link";
 
 export interface ProductResponse {
   success: boolean;
@@ -223,8 +225,15 @@ export interface Seo {
   og_type: string;
   twitter_card: string;
 }
+interface ProductDetailClientProps {
+  product: Product;
+  isToken: boolean;
+}
 
-export default function ProductDetailClient({ product }: { product: Product }) {
+export default function ProductDetailClient({
+  product,
+  isToken,
+}: ProductDetailClientProps) {
   const { addToCart } = useCart();
 
   const [selectedColor, setSelectedColor] = useState<string>(
@@ -414,13 +423,19 @@ export default function ProductDetailClient({ product }: { product: Product }) {
           )}
 
           {/* Add to Cart */}
-          <Button
-            className="w-full mt-8 h-12 text-lg font-semibold"
-            disabled={!canAddToCart}
-            onClick={handleAddToCart}
-          >
-            {canAddToCart ? "Add To Cart" : "Out of Stock"}
-          </Button>
+          {isToken ? (
+            <Button
+              className="w-full mt-8 h-12 text-lg font-semibold"
+              disabled={!canAddToCart}
+              onClick={handleAddToCart}
+            >
+              {canAddToCart ? "Add To Cart" : "Out of Stock"}
+            </Button>
+          ) : (
+            <Link className=" " href={"/login"}>
+              <Button className="w-full mt-8">Please Login</Button>
+            </Link>
+          )}
 
           {/* Description */}
           <div className="mt-6 text-sm text-gray-600">

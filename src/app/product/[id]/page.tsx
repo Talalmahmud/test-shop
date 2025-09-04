@@ -1,5 +1,5 @@
 import ProductDetailClient2 from "@/components/shared/product-details2";
-
+import { getToken } from "@/services/token";
 
 export default async function Page({
   params,
@@ -7,7 +7,8 @@ export default async function Page({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-
+  const token = await getToken();
+  
   // Fetch product data
   // const product2 = await fetch(
   //   `${process.env.NEXT_PUBLIC_BASE_URL}/products/${id}`
@@ -30,7 +31,7 @@ export default async function Page({
   return (
     <div>
       {/* <ProductDetailClient product2={product2.data[0]} /> */}
-      <ProductDetailClient2 product={product3.data} />
+      <ProductDetailClient2 isToken={token?true:false} product={product3.data} />
       {/* <div className="py-10 px-6 lg:px-20">
         <h2 className="text-[40px] font-serif">Related Product</h2>
         <ProductSliderWithoutFilter slides={relatedProduct.data} />
