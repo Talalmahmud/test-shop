@@ -18,6 +18,8 @@ import {
   getCartSummary,
   updateQuantityCart,
 } from "@/services/cart";
+import Link from "next/link";
+import { Button } from "../ui/button";
 
 // Type from your backend response
 interface CartItem {
@@ -209,9 +211,11 @@ const Cart = () => {
                 <p className="text-sm text-gray-600 mb-4">
                   Shipping & taxes calculated at checkout
                 </p>
-                <button className="w-full bg-black text-white py-3 rounded-md font-medium">
-                  Checkout
-                </button>
+                <SheetClose asChild>
+                  <Link className="w-full" href={"/checkout"}>
+                    <Button> Checkout</Button>
+                  </Link>
+                </SheetClose>
               </div>
             </SheetFooter>
           </div>

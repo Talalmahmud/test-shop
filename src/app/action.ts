@@ -30,3 +30,11 @@ export const userLogin = async (
 
   redirect("/user");
 };
+
+export const userLogOut = async () => {
+  const cookie = await cookies();
+
+  cookie.delete("token");
+
+  redirect("/");
+};

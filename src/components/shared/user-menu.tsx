@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { userLogOut } from "@/app/action";
 
 interface UserSidebarProps {
   user?: {
@@ -67,8 +68,9 @@ export function UserSidebar({ user }: UserSidebarProps) {
   const handleLogout = async () => {
     try {
       console.log("Logging out...");
-      // Add your logout logic here
-      router.push("/login");
+      const res = await userLogOut();
+
+      router.push("/");
     } catch (error) {
       console.error("Logout failed:", error);
     }

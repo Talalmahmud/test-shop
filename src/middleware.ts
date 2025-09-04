@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-// Protected routes
-const protectedRoutes = ["/user"];
+// 🔒 Protected routes
+const protectedRoutes = ["/user", "/checkout"];
 
 export function middleware(req: NextRequest) {
   const token = req.cookies.get("token")?.value;
@@ -20,7 +20,7 @@ export function middleware(req: NextRequest) {
   return NextResponse.next();
 }
 
-// ✅ Apply middleware only to /user and its children
+// ✅ Apply middleware only to /user* and /checkout*
 export const config = {
-  matcher: ["/user", "/user/:path*"],
+  matcher: ["/user/:path*", "/checkout/:path*"],
 };
