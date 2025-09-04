@@ -1,5 +1,4 @@
 import ProductDetailClient2 from "@/components/shared/product-details2";
-import ProductSlider2 from "@/components/shared/slider2";
 import ProductSliderWithoutFilter from "@/components/shared/sliderwithoutfilter";
 import { getToken } from "@/services/token";
 
