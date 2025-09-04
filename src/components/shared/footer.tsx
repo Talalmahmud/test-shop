@@ -71,7 +71,7 @@ const Footer = async () => {
                   </li>
                   <li>
                     <Link
-                      href={`/return`}
+                      href={`/tnc`}
                       className="text-sm text-gray-300 hover:text-white transition-colors"
                     >
                       Term Conditions
@@ -79,7 +79,7 @@ const Footer = async () => {
                   </li>
                   <li>
                     <Link
-                      href={`/return`}
+                      href={`/faq`}
                       className="text-sm text-gray-300 hover:text-white transition-colors"
                     >
                       FAQ
