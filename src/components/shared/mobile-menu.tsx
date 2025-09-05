@@ -21,6 +21,7 @@ import Image from "next/image";
 import { Button } from "../ui/button";
 import { userLogOut } from "@/app/action";
 import { useRouter } from "next/navigation";
+import { useCart } from "../CartContext";
 
 // Define the category type
 type CategoryItem = {
@@ -46,12 +47,14 @@ interface MobileMenuProps {
 }
 
 const MobileMenu = ({ categories, isCookie }: MobileMenuProps) => {
+  const { fetchCart } = useCart();
+
   const router = useRouter();
   const handleLogout = async () => {
     try {
       console.log("Logging out...");
       const res = await userLogOut();
-
+      fetchCart();
       router.push("/");
     } catch (error) {
       console.error("Logout failed:", error);

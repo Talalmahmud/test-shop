@@ -18,6 +18,7 @@ import {
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { userLogOut } from "@/app/action";
+import { useCart } from "../CartContext";
 
 interface UserSidebarProps {
   user?: {
@@ -28,6 +29,7 @@ interface UserSidebarProps {
 }
 
 export function UserSidebar({ user }: UserSidebarProps) {
+  const { fetchCart } = useCart();
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
@@ -69,7 +71,7 @@ export function UserSidebar({ user }: UserSidebarProps) {
     try {
       console.log("Logging out...");
       const res = await userLogOut();
-
+      fetchCart();
       router.push("/");
     } catch (error) {
       console.error("Logout failed:", error);
