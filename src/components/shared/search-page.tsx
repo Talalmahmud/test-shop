@@ -14,7 +14,7 @@ type Props = {
   categoryList: Category[];
 };
 interface FilterProps {
-  colors: string[];
+  colors: { name: string; code: string }[];
   sizes: string[];
 }
 

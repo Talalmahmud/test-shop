@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import {
   Sheet,
   SheetContent,
@@ -12,55 +12,65 @@ import {
 } from "@/components/ui/sheet";
 import { ArrowLeft, Minus, Plus, X } from "lucide-react";
 import Image from "next/image";
-import {
-  deleteCart,
-  getCart,
-  getCartSummary,
-  updateQuantityCart,
-} from "@/services/cart";
+// import {
+//   deleteCart,
+//   getCart,
+//   getCartSummary,
+//   updateQuantityCart,
+// } from "@/services/cart";
 import Link from "next/link";
 import { Button } from "../ui/button";
 import { useCart } from "../CartContext";
 
 // Type from your backend response
-interface CartItem {
-  id: number;
-  product_name: string;
-  product_thumbnail_image: string;
-  variation: string;
-  price: number;
-  currency_symbol: string;
-  tax: number;
-  shipping_cost: number;
-  quantity: number;
-  lower_limit: number;
-  upper_limit: number;
-  in_stock: number;
-}
+// interface CartItem {
+//   id: number;
+//   product_name: string;
+//   product_thumbnail_image: string;
+//   variation: string;
+//   price: number;
+//   currency_symbol: string;
+//   tax: number;
+//   shipping_cost: number;
+//   quantity: number;
+//   lower_limit: number;
+//   upper_limit: number;
+//   in_stock: number;
+// }
 
-interface CartPrice {
-  sub_total: string;
-  tax: string;
-  shipping_cost: string;
-  discount: string;
-  grand_total: string;
-  grand_total_value: number;
-  coupon_code: string | null;
-  coupon_applied: false;
-}
+// interface CartPrice {
+//   sub_total: string;
+//   tax: string;
+//   shipping_cost: string;
+//   discount: string;
+//   grand_total: string;
+//   grand_total_value: number;
+//   coupon_code: string | null;
+//   coupon_applied: false;
+// }
 
 const Cart = () => {
-    const { isOpen, closeCart, cartItems, cartPrice, updateQuantity, removeItem } = useCart();
+  const {
+    isOpen,
+    closeCart,
+    cartItems,
+    cartPrice,
+    updateQuantity,
+    removeItem,
+    openCart,
+  } = useCart();
 
- 
-
-  
   return (
     <>
-      <Sheet open={isOpen} onOpenChange={closeCart}>
-        <SheetTrigger className="h-8 px-4 font-bold text-[14px] bg-gray-200 rounded-full flex justify-center gap-[2px] items-center">
-          <span className="hidden md:block">Cart</span> ({cartItems.length})
-          <span className="block md:hidden h-2 w-2 bg-black rounded-full"></span>
+      <Sheet
+        open={isOpen}
+        onOpenChange={(open) => (open ? openCart() : closeCart())}
+      >
+        <SheetTrigger asChild>
+          <button className="h-8 px-4 font-bold text-[14px] bg-gray-200 rounded-full flex justify-center gap-[2px] items-center">
+            <span className="hidden md:block">Cart</span> ({cartItems.length})
+            <span className="block md:hidden h-2 w-2 bg-black rounded-full"></span>
+          </button>
         </SheetTrigger>
 
         <SheetContent className="px-4 min-w-full sm:min-w-[400px]">

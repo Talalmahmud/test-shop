@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { getOrder } from "@/services/order";
+import { useCart } from "@/components/CartContext";
 
 interface Order {
   id: number;

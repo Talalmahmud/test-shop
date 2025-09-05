@@ -37,6 +37,7 @@ import { SheetFooter } from "@/components/ui/sheet";
 import Image from "next/image";
 import { addOrder } from "@/services/order";
 import { useRouter } from "next/navigation";
+import { useCart } from "@/components/CartContext";
 
 interface CartItem {
   id: number;
@@ -65,6 +66,8 @@ interface CartPrice {
 }
 export default function CheckoutPage() {
   const router = useRouter();
+  const { fetchCart } = useCart();
+
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [cartPrice, setCartPrice] = useState<CartPrice>({
     sub_total: "",
@@ -147,6 +150,7 @@ export default function CheckoutPage() {
     const resData = await addOrder();
     if (resData) {
       alert("Order placed successfully!");
+      fetchCart();
       router.push("/user/order");
     } else {
       alert("Order is not placed successfully!");

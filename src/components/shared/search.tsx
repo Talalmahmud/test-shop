@@ -97,8 +97,8 @@ const ProductSearch = () => {
           <Search size={14} />
         </div>
       </SheetTrigger>
-      <SheetContent className=" min-w-full sm:min-w-[400px] md:min-w-[500px] lg:min-w-[500px] xl:min-w-[500px] 2xl:min-w-[600px] flex justify-between">
-        <SheetHeader className="mb-2">
+      <SheetContent className=" min-w-full sm:min-w-[400px] md:min-w-[500px] lg:min-w-[500px] xl:min-w-[500px] 2xl:min-w-[600px] flex ">
+        <SheetHeader className="">
           <SheetTitle className="flex justify-between items-center font-bold">
             <SheetClose asChild>
               <button className="flex items-center text-blue-600 text-[24px] font-medium hover:underline">
@@ -161,11 +161,12 @@ const ProductSearch = () => {
                       base_price_formatted: string;
                       discounted_price_formatted: string;
                       id: number;
+                      slug: string;
                     },
                     index
                   ) => (
                     <Link
-                      href={`/product/${product.id}`}
+                      href={`/product/${product.slug}`}
                       key={index}
                       className=" "
                     >
