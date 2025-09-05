@@ -53,7 +53,7 @@ const MobileMenu = ({ categories }: MobileMenuProps) => {
           <SheetHeader className="mb-6">
             <SheetTitle className="text-xl font-bold">
               {" "}
-              <Image src={"/logo.png"} alt="Logo" width={40} height={10} />
+              <Image src={"/logo.jpeg"} alt="Logo" width={40} height={10} />
             </SheetTitle>
             <SheetDescription className="text-base"></SheetDescription>
           </SheetHeader>
