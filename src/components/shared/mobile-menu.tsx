@@ -1,5 +1,5 @@
 "use client";
-import { AlignJustify, LogOut, Menu } from "lucide-react";
+import { AlignJustify, LogOut, Menu, UserRound } from "lucide-react";
 import React from "react";
 import {
   Sheet,
@@ -77,7 +77,17 @@ const MobileMenu = ({ categories, isCookie }: MobileMenuProps) => {
                 </Link>
               </SheetClose>
             </SheetTitle>
-            <SheetDescription className="text-base"></SheetDescription>
+            <SheetDescription className="text-base text-end">
+              {isCookie && (
+                <SheetClose asChild>
+                  <Link href={"/user"}>
+                    <Button className=" h-8 w-8 bg-gray-400 rounded-full flex justify-center items-center">
+                      <UserRound size={14} />
+                    </Button>
+                  </Link>
+                </SheetClose>
+              )}
+            </SheetDescription>
           </SheetHeader>
 
           <Accordion type="single" collapsible className="w-full">

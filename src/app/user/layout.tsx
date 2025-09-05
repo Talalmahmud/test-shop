@@ -13,10 +13,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="min-h-screen bg-gray-50 flex gap-2">
+    <div className="min-h-screen bg-gray-50 flex flex-row gap-2">
       <UserSidebar />
 
-      <div className=" w-full">{children}</div>
+      <div className=" w-full px-4 md:px-0">{children}</div>
     </div>
   );
 }
