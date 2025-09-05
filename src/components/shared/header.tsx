@@ -16,6 +16,7 @@ import { cookies } from "next/headers";
 
 const Header = async () => {
   const cookie = await cookies();
+  const isCookie = await cookie.get("token");
   const listData = await fetch(
     `${process.env.NEXT_PUBLIC_BASE_URL}/categories/navigation`
   ).then((res) => res.json());
@@ -37,8 +38,8 @@ const Header = async () => {
   // <div className="bg-white flex items-center justify-between w-screem  border-b-[1px] border-slate-300 py-4 top-0 left-0 sticky z-50 ">
 
   return (
-    <div className="bg-white grid grid-cols-3 w-full border-b-[1px] border-slate-300 py-4 top-0 left-0 sticky z-50 ">
-      <MobileMenu categories={processData} />
+    <div className="bg-white grid grid-cols-3 items-center w-full border-b-[1px] border-slate-300 py-4 top-0 left-0 sticky z-50 ">
+      <MobileMenu isCookie={isCookie ? true : false} categories={processData} />
 
       <NavigationMenu className="hidden lg:flex pl-7 scrollbar-hide w-full  text-black">
         <NavigationMenuList>

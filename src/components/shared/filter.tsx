@@ -116,7 +116,7 @@ const Filter = ({ filterList }: Props) => {
     <Sheet>
       {/* Trigger Button */}
       <SheetTrigger asChild>
-        <Button variant="outline" className="relative">
+        <Button variant="default" className="relative">
           Filter
           {hasActiveFilters && (
             <span className="absolute -top-2 -right-2 w-5 h-5 bg-blue-600 text-white text-xs rounded-full flex items-center justify-center">

@@ -1,4 +1,5 @@
-import { AlignJustify } from "lucide-react";
+"use client";
+import { AlignJustify, LogOut, Menu } from "lucide-react";
 import React from "react";
 import {
   Sheet,
@@ -17,6 +18,9 @@ import {
 } from "@/components/ui/accordion";
 import Link from "next/link";
 import Image from "next/image";
+import { Button } from "../ui/button";
+import { userLogOut } from "@/app/action";
+import { useRouter } from "next/navigation";
 
 // Define the category type
 type CategoryItem = {
@@ -38,22 +42,37 @@ type CategoryItem = {
 
 interface MobileMenuProps {
   categories: CategoryItem[];
+  isCookie: boolean;
 }
 
-const MobileMenu = ({ categories }: MobileMenuProps) => {
+const MobileMenu = ({ categories, isCookie }: MobileMenuProps) => {
+  const router = useRouter();
+  const handleLogout = async () => {
+    try {
+      console.log("Logging out...");
+      const res = await userLogOut();
+
+      router.push("/");
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
+  };
   return (
     <div className="pl-6 block lg:hidden">
       <Sheet>
         <SheetTrigger>
-          <div className="h-8 w-8 bg-gray-200 rounded-full flex justify-center items-center">
-            <AlignJustify size={14} />
+          <div className="">
+            <Menu size={28} />
           </div>
         </SheetTrigger>
         <SheetContent className="px-4 min-w-full sm:min-w-[400px] md:min-w-[500px] lg:min-w-[500px] xl:min-w-[500px] 2xl:min-w-[600px] overflow-y-auto">
           <SheetHeader className="mb-6">
             <SheetTitle className="text-xl font-bold">
-              {" "}
-              <Image src={"/logo.jpeg"} alt="Logo" width={40} height={10} />
+              <SheetClose asChild>
+                <Link href={"/"}>
+                  <Image src={"/logo.jpeg"} alt="Logo" width={40} height={10} />
+                </Link>
+              </SheetClose>
             </SheetTitle>
             <SheetDescription className="text-base"></SheetDescription>
           </SheetHeader>
@@ -62,7 +81,15 @@ const MobileMenu = ({ categories }: MobileMenuProps) => {
             {categories.map((category, index) => (
               <AccordionItem key={category.id} value={`item-${category.id}`}>
                 <AccordionTrigger className="font-medium text-lg">
-                  {category.name}
+                  <SheetClose asChild>
+                    <Link
+                      href={`/search?category_slug=${category.slug}`}
+                      className="hover:text-blue-600"
+                    >
+                      {" "}
+                      {category.name}
+                    </Link>
+                  </SheetClose>
                 </AccordionTrigger>
                 <AccordionContent>
                   <div className="pl-4 border-l border-gray-200 ml-2">
@@ -116,17 +143,30 @@ const MobileMenu = ({ categories }: MobileMenuProps) => {
           <div className="mt-8 pt-6 border-t border-gray-200">
             <h3 className="font-semibold mb-3">Account</h3>
             <div className="flex flex-col gap-2">
+              {isCookie ? (
+                <SheetClose asChild>
+                  <Button
+                    variant="ghost"
+                    className="w-full justify-start text-red-600 hover:text-red-700 hover:bg-red-50"
+                    onClick={handleLogout}
+                  >
+                    <LogOut className="h-5 w-5 mr-3" />
+                    Log out
+                  </Button>
+                </SheetClose>
+              ) : (
+                <SheetClose asChild>
+                  <Link
+                    href="/login"
+                    className="py-2 px-4 hover:bg-gray-100 rounded-md"
+                  >
+                    Sign In
+                  </Link>
+                </SheetClose>
+              )}
               <SheetClose asChild>
                 <Link
                   href="/login"
-                  className="py-2 px-4 hover:bg-gray-100 rounded-md"
-                >
-                  Sign In
-                </Link>
-              </SheetClose>
-              <SheetClose asChild>
-                <Link
-                  href="/register"
                   className="py-2 px-4 hover:bg-gray-100 rounded-md"
                 >
                   Create Account

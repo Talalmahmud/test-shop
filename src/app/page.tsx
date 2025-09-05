@@ -193,10 +193,10 @@ export default async function Home() {
       <div className="py-10 px-6 lg:px-7">
         <h2 className="text-[40px] font-serif ">Shop by Category</h2>
         <div className="h-[1px] w-full bg-slate-300 my-2"></div>
-        <div className="space-y-6">
+        <div className=" hidden md:block space-y-6">
           {rows.map((row, rowIndex) => {
             const count = row.length;
-            let basisClass = "basis-1/4"; // default for 4 items
+            let basisClass = " basis-1/4"; // default for 4 items
 
             if (count === 1) basisClass = "basis-full";
             if (count === 2) basisClass = "basis-1/2";
@@ -228,6 +228,30 @@ export default async function Home() {
               </div>
             );
           })}
+        </div>
+
+        <div className=" md:hidden grid grid-cols-1 gap-6">
+          {rows.flat().map((category: Category) => (
+            <Link
+              href={`/search?category_slug=${category.slug}`}
+              key={category.id}
+              className="relative h-[300px] md:h-[350px] lg:h-[400px] rounded-xl overflow-hidden group cursor-pointer"
+            >
+              <Image
+                src={
+                  category.thumbnail ||
+                  "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=900&auto=format&fit=crop&q=60"
+                }
+                alt={category.name}
+                fill
+                className="object-cover group-hover:scale-105 transition-transform duration-300"
+              />
+              <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-colors duration-300"></div>
+              <p className="text-white text-[16px] font-semibold absolute bottom-4 text-center w-full underline">
+                {category.name}
+              </p>
+            </Link>
+          ))}
         </div>
       </div>
 

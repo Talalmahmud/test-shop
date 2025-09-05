@@ -79,7 +79,7 @@ export default function ProductCard2({
       <Link href={`/product/${item.slug}`}>
         <CardContent className="flex flex-col w-full items-center p-0">
           {/* Image Wrapper */}
-          <div className="group relative h-[500px] w-full overflow-hidden bg-gray-50">
+          <div className="group relative h-[350px] md:h-[500px] w-full overflow-hidden bg-gray-50">
             <Image
               src={item.thumbnail || "/placeholder-image.jpg"}
               alt={item.name}
