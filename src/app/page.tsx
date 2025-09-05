@@ -275,7 +275,7 @@ export default async function Home() {
         <div className=" grid grid-cols-1 sm:grid-cols-2 gap-6">
           <div className=" w-full h-[600px] relative">
             <Image
-              src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80"
+              src="https://images.unsplash.com/photo-1567401893414-76b7b1e5a7a5?q=80&w=1740&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
               alt="Sale Banner"
               fill
               className=" object-cover"
@@ -283,21 +283,20 @@ export default async function Home() {
             />
             <div className=" absolute inset-0 bg-black/30 "></div>
             <div className=" absolute  z-10 flex items-end flex-col right-8 bottom-6 text-white ">
-              <p className=" text-[40px]"> Mens</p>
+              <p className=" text-[40px]"> Womens</p>
 
-              <div className=" grid grid-cols-2 gap-4">
-                <Button className=" mt-6 bg-white text-black font-semibold px-6 py-3 rounded-md hover:bg-gray-200">
-                  Shop Now
-                </Button>
-                <Button className=" mt-6 bg-white text-black font-semibold px-6 py-3 rounded-md hover:bg-gray-200">
-                  Shop Now
-                </Button>
+              <div className=" grid grid-cols-1 gap-4">
+                <Link href={"/search?gender=women"}>
+                  <Button className=" mt-6 bg-white text-black font-semibold px-6 py-3 rounded-md hover:bg-gray-200">
+                    Shop Now
+                  </Button>
+                </Link>
               </div>
             </div>
           </div>
           <div className=" w-full h-[600px] relative">
             <Image
-              src="https://images.unsplash.com/photo-1453396450673-3fe83d2db2c4?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTB8fG1hbnxlbnwwfHwwfHx8MA%3D%3D"
+              src="https://images.unsplash.com/photo-1441984904996-e0b6ba687e04?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
               alt="Sale Banner"
               fill
               className=" object-cover"
@@ -307,13 +306,12 @@ export default async function Home() {
             <div className=" absolute  z-10 flex items-end flex-col right-8 bottom-6 text-white ">
               <p className=" text-[40px] "> Mens</p>
 
-              <div className=" grid grid-cols-2 gap-4">
-                <Button className=" mt-6 bg-white text-black font-semibold px-6 py-3 rounded-md hover:bg-gray-200">
-                  Shop Now
-                </Button>
-                <Button className=" mt-6 bg-white text-black font-semibold px-6 py-3 rounded-md hover:bg-gray-200">
-                  Shop Now
-                </Button>
+              <div className=" grid grid-cols-1 gap-4">
+                <Link href={"/search?gender=men"}>
+                  <Button className=" mt-6 bg-white text-black font-semibold px-6 py-3 rounded-md hover:bg-gray-200">
+                    Shop Now
+                  </Button>
+                </Link>
               </div>
             </div>
           </div>
