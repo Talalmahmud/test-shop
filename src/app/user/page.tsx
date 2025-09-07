@@ -28,6 +28,9 @@ import {
 } from "lucide-react";
 import {
   addShippingAddress,
+  getCitiesBYState,
+  getCountries,
+  getSateByCountry,
   getShippingAddresses,
   getUserProfile,
   updateShippingAddress,
@@ -111,6 +114,10 @@ const cities = [
   { id: 11, state_id: 6, name: "London" },
   { id: 12, state_id: 6, name: "Manchester" },
 ];
+interface LocationType {
+  id: string;
+  name: string;
+}
 
 export default function ProfilePage() {
   const [isEditing, setIsEditing] = useState(false);
@@ -120,6 +127,23 @@ export default function ProfilePage() {
   const [editingAddress, setEditingAddress] = useState<ShippingAddress | null>(
     null
   );
+  const [countryList, setCountryList] = useState<LocationType[]>([]);
+  const [selectedCountry, setSelectedCountry] = useState<LocationType>({
+    id: "",
+    name: "",
+  });
+  const [cityList, setCityList] = useState<LocationType[]>([]);
+  const [selectedCity, setSelectedCity] = useState<LocationType>({
+    id: "",
+    name: "",
+  });
+
+  const [stateList, setStateList] = useState<LocationType[]>([]);
+  const [selectedState, setSelectedState] = useState<LocationType>({
+    id: "",
+    name: "",
+  });
+
   const [activeMenu, setActiveMenu] = useState<number | null>(null);
 
   const [user, setUser] = useState<UserProfile>({
@@ -294,20 +318,16 @@ export default function ProfilePage() {
     if (editingAddress) {
       // Update existing address
       const newAddress = {
-        id:editingAddress.id,
+        id: editingAddress.id,
         address: editingAddress.address,
         country_id: 1, // Default country_id
         state_id: 5, // Default state_id
         city_id: 10, // Default city_id
         postal_code: editingAddress.postal_code,
         phone: editingAddress.phone,
-       
       };
 
-      const resEditDdata = await updateShippingAddress(
-     
-        newAddress
-      );
+      const resEditDdata = await updateShippingAddress(newAddress);
       fetchAddress();
 
       alert("Address updated successfully");
@@ -418,8 +438,80 @@ export default function ProfilePage() {
     }
   };
 
+  const fetchCountry = async () => {
+    setIsLoading(true);
+    try {
+      const res = await getCountries();
+      setCountryList(
+        res.map((item: { id: string; name: string }) => ({
+          id: item.id,
+          name: item.name,
+        }))
+      );
+      console.log(res);
+
+      // Initialize form data with user data
+    } catch (err) {
+      console.error("Failed to load profile", err);
+      alert("Failed to load profile");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const fetchCity = async (id: string) => {
+    setIsLoading(true);
+    try {
+      const res = await getCitiesBYState(id);
+      setCityList(
+        res.map((item: { id: string; name: string }) => ({
+          id: item.id,
+          name: item.name,
+        }))
+      );
+      // Initialize form data with user data
+    } catch (err) {
+      console.error("Failed to load profile", err);
+      alert("Failed to load profile");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  const fetchState = async (id: string) => {
+    setIsLoading(true);
+    try {
+      const res = await getSateByCountry(id);
+      console.log(res);
+      setStateList(
+        res.map((item: { id: string; name: string }) => ({
+          id: item.id,
+          name: item.name,
+        }))
+      );
+      // Initialize form data with user data
+    } catch (err) {
+      console.error("Failed to load profile", err);
+      alert("Failed to load profile");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (selectedCountry) {
+      fetchState(selectedCountry.id);
+    }
+  }, [selectedCountry]);
+
+  useEffect(() => {
+    if (selectedCity) {
+      fetchCity(selectedCity.id);
+    }
+  }, [selectedCity]);
+
   useEffect(() => {
     fetchData();
+    fetchCountry();
   }, []);
 
   useEffect(() => {

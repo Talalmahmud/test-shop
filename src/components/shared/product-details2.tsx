@@ -2,7 +2,7 @@
 import Image from "next/image";
 import { Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Accordion,
   AccordionContent,
@@ -234,15 +234,32 @@ export default function ProductDetailClient({
   product,
   isToken,
 }: ProductDetailClientProps) {
+  console.log(product);
   const { addToCart } = useCart();
 
-  const [selectedColor, setSelectedColor] = useState<string>(
-    product.specifications.colors?.[0]?.hex_code || ""
+  const [selectedColor, setSelectedColor] = useState<Color>(
+    product.specifications.colors?.[0]
   );
+  const [selectedVariant, setSelectedVariant] = useState<Variant | null>(null);
+
   const [selectedOptions, setSelectedOptions] = useState<
     Record<string, string>
   >({});
 
+  // console.log([selectedColor?.name, ...Object.values(selectedOptions)]);
+  function checkAllInString(str: string, arr: string[]) {
+    // remove null/undefined/empty items and check
+    return arr.filter(Boolean).every((item) => str.includes(item));
+  }
+  useEffect(() => {
+    const variant = product.variants.find((v: Variant) =>
+      checkAllInString(v.variant, [
+        selectedColor?.name,
+        ...Object.values(selectedOptions),
+      ])
+    );
+    setSelectedVariant(variant || null);
+  }, [product.variants, selectedColor, selectedOptions]);
 
   // handle option (like length, width)
   const handleOptionSelect = (optionName: string, value: string) => {
@@ -257,7 +274,7 @@ export default function ProductDetailClient({
     // variant names in API look like: Black-18inch-7mm
     const variantName = [
       product.specifications.colors.find(
-        (c: Color) => c.hex_code === selectedColor
+        (c: Color) => c.hex_code === selectedColor.hex_code
       )?.name || "",
       ...Object.values(selectedOptions),
     ].join("-");
@@ -265,7 +282,6 @@ export default function ProductDetailClient({
     return product.variants.find((v: Variant) => v.variant === variantName);
   };
 
-  const selectedVariant = findSelectedVariant();
   const currentPrice = selectedVariant?.price || product.pricing.base_price;
   const currentStock =
     selectedVariant?.quantity || product.inventory.total_quantity;
@@ -379,11 +395,11 @@ export default function ProductDetailClient({
                     <button
                       key={i}
                       className={`flex items-center justify-center w-9 h-9 rounded-full border-2 transition ${
-                        selectedColor === color.hex_code
+                        selectedColor.hex_code === color.hex_code
                           ? "border-blue-500"
                           : "border-gray-300 hover:border-gray-400"
                       }`}
-                      onClick={() => setSelectedColor(color.hex_code)}
+                      onClick={() => setSelectedColor(color)}
                       aria-label={`Select color ${color.name}`}
                     >
                       <span

@@ -271,3 +271,110 @@ export const setDefaultShippingAddress = async (
     return false;
   }
 };
+
+export const getCountries = async () => {
+  try {
+    const token = await getToken();
+
+    if (!token) {
+      console.error("No authentication token found");
+      return [];
+    }
+
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/countries`, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!res.ok) {
+      console.error(
+        "Failed to fetch shipping addresses:",
+        res.status,
+        res.statusText
+      );
+      return [];
+    }
+    const d = await res.json();
+    console.log(d);
+
+    return d.data;
+  } catch (error) {
+    console.error("Error fetching shipping addresses:", error);
+    return [];
+  }
+};
+
+export const getCitiesBYState = async (id: string) => {
+  try {
+    const token = await getToken();
+
+    if (!token) {
+      console.error("No authentication token found");
+      return [];
+    }
+
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/cities-by-state/${id}`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    if (!res.ok) {
+      console.error(
+        "Failed to fetch shipping addresses:",
+        res.status,
+        res.statusText
+      );
+      return [];
+    }
+    const d = await res.json();
+    console.log(d);
+
+    return d.data;
+  } catch (error) {
+    console.error("Error fetching shipping addresses:", error);
+    return [];
+  }
+};
+export const getSateByCountry = async (id: string) => {
+  try {
+    const token = await getToken();
+
+    if (!token) {
+      console.error("No authentication token found");
+      return [];
+    }
+
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/states-by-country/${id}`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    if (!res.ok) {
+      console.error(
+        "Failed to fetch shipping addresses:",
+        res.status,
+        res.statusText
+      );
+      return [];
+    }
+    const d = await res.json();
+    console.log(d);
+
+    return d.data;
+  } catch (error) {
+    console.error("Error fetching shipping addresses:", error);
+    return [];
+  }
+};
