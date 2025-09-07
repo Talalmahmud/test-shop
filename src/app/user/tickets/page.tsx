@@ -119,8 +119,6 @@ export default function TicketsPage() {
   //   }
   // };
 
-  
-
   const handleDeleteTicket = async (ticketId: number) => {
     try {
       await deleteTicket(ticketId);
@@ -337,7 +335,7 @@ export default function TicketsPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex items-start md:items-center md:flex-row flex-col justify-between">
         <div>
           <h1 className="text-3xl font-bold">Support Tickets</h1>
           <p className="text-muted-foreground">
@@ -361,7 +359,7 @@ export default function TicketsPage() {
             <h3 className="text-lg font-semibold mb-2">
               No support tickets yet
             </h3>
-            <p className="text-muted-foreground mb-4">
+            <p className="text-muted-foreground  mb-4">
               Create your first support ticket to get help with any issues
             </p>
             <Button onClick={() => setIsCreateDialogOpen(true)}>
@@ -370,41 +368,37 @@ export default function TicketsPage() {
           </CardContent>
         </Card>
       ) : (
-        <Card>
-          <CardContent className="p-0">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Ticket #</TableHead>
-                  <TableHead>Subject</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Created</TableHead>
-                  <TableHead className="text-right">Actions</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {tickets.map((ticket) => (
-                  <TableRow key={ticket.id}>
-                    <TableCell className="font-medium">{ticket.code}</TableCell>
-                    <TableCell>
-                      <div className="max-w-xs truncate">{ticket.subject}</div>
-                    </TableCell>
-                    <TableCell className=" font-semibold">
-                      {ticket.status}
-                    </TableCell>
-                    <TableCell>
-                      {new Date(ticket.created_at).toLocaleDateString()}
-                    </TableCell>
-                    <TableCell className="text-right">
-                      <div className="flex justify-end gap-2">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => setSelectedTicket(ticket)}
-                        >
-                          <Eye className="h-4 w-4" />
-                        </Button>
-                        {/* <AlertDialog>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Ticket #</TableHead>
+              <TableHead>Subject</TableHead>
+              <TableHead>Status</TableHead>
+              <TableHead>Created</TableHead>
+              <TableHead className="text-right">Actions</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {tickets.map((ticket) => (
+              <TableRow key={ticket.id}>
+                <TableCell className="font-medium">{ticket.code}</TableCell>
+                <TableCell>{ticket.subject}</TableCell>
+                <TableCell className=" font-semibold">
+                  {ticket.status}
+                </TableCell>
+                <TableCell>
+                  {new Date(ticket.created_at).toLocaleDateString()}
+                </TableCell>
+                <TableCell className="text-right">
+                  <div className="flex justify-end gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setSelectedTicket(ticket)}
+                    >
+                      <Eye className="h-4 w-4" />
+                    </Button>
+                    {/* <AlertDialog>
                           <AlertDialogTrigger asChild>
                             <Button variant="destructive" size="sm">
                               <Trash2 className="h-4 w-4" />
@@ -428,14 +422,12 @@ export default function TicketsPage() {
                             </AlertDialogFooter>
                           </AlertDialogContent>
                         </AlertDialog> */}
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </CardContent>
-        </Card>
+                  </div>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
       )}
 
       <CreateTicketDialog

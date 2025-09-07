@@ -287,12 +287,12 @@ export default function ProductDetailClient({
     <div>
       <section className="w-full px-6 md:px-7 py-10 grid grid-cols-1 lg:grid-cols-3 gap-10">
         {/* Left - Images */}
-        <div className="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4 h-screen overflow-y-auto scrollbar-hide">
+        <div className="lg:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4 h-[400px] lg:h-screen overflow-y-auto scrollbar-hide">
           {product.media.gallery.map(
             (photo: { original: string }, i: number) => (
               <div
                 key={i}
-                className="relative w-full h-[450px] rounded-xl overflow-hidden bg-gray-100"
+                className="relative w-full max-h-[450px] rounded-xl overflow-hidden bg-gray-100"
               >
                 <Image
                   src={photo.original}

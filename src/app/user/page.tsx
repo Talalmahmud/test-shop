@@ -33,9 +33,11 @@ import {
   getSateByCountry,
   getShippingAddresses,
   getUserProfile,
+  setDefaultShippingAddress,
   updateShippingAddress,
 } from "@/services/user";
 import { updateUserProfile } from "../action";
+import { Combobox } from "@/components/shared/combobox";
 
 interface UserProfile {
   id: number;
@@ -75,11 +77,14 @@ interface ShippingAddress {
   country_id: number;
   state_id: number;
   city_id: number;
+  country_name?: string;
+  state_name?: string;
+  city_name?: string;
   postal_code: string;
   phone: string;
   latitude: string;
   longitude: string;
-  is_default: boolean;
+  set_default: number;
   created_at: string;
   updated_at: string;
 }
@@ -128,21 +133,12 @@ export default function ProfilePage() {
     null
   );
   const [countryList, setCountryList] = useState<LocationType[]>([]);
-  const [selectedCountry, setSelectedCountry] = useState<LocationType>({
-    id: "",
-    name: "",
-  });
+  const [selectedCountry, setSelectedCountry] = useState<string>("");
   const [cityList, setCityList] = useState<LocationType[]>([]);
-  const [selectedCity, setSelectedCity] = useState<LocationType>({
-    id: "",
-    name: "",
-  });
+  const [selectedCity, setSelectedCity] = useState<string>("");
 
   const [stateList, setStateList] = useState<LocationType[]>([]);
-  const [selectedState, setSelectedState] = useState<LocationType>({
-    id: "",
-    name: "",
-  });
+  const [selectedState, setSelectedState] = useState<string>("");
 
   const [activeMenu, setActiveMenu] = useState<number | null>(null);
 
@@ -204,7 +200,7 @@ export default function ProfilePage() {
         phone: "+1 (555) 123-4567",
         latitude: "40.7128",
         longitude: "-74.0060",
-        is_default: true,
+        set_default: 1,
         created_at: "2023-01-15T10:30:00Z",
         updated_at: "2023-01-15T10:30:00Z",
       },
@@ -219,12 +215,21 @@ export default function ProfilePage() {
         phone: "+1 (555) 987-6543",
         latitude: "40.7282",
         longitude: "-73.7942",
-        is_default: false,
+        set_default: 1,
         created_at: "2023-03-22T14:45:00Z",
         updated_at: "2023-03-22T14:45:00Z",
       },
     ]
   );
+  const handleCityChange = (value: string) => {
+    setSelectedCity(value);
+  };
+  const handleCountryChange = (value: string) => {
+    setSelectedCountry(value);
+  };
+  const handleStateChange = (value: string) => {
+    setSelectedState(value);
+  };
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -303,13 +308,9 @@ export default function ProfilePage() {
     setActiveMenu(null);
   };
 
-  const handleSetDefaultAddress = (id: number) => {
-    setShippingAddresses((prev) =>
-      prev.map((addr) => ({
-        ...addr,
-        is_default: addr.id === id,
-      }))
-    );
+  const handleSetDefaultAddress = async (id: number) => {
+    const res = await setDefaultShippingAddress(id);
+    fetchAddress();
     alert("Default address updated successfully");
     setActiveMenu(null);
   };
@@ -387,22 +388,6 @@ export default function ProfilePage() {
       .slice(0, 2);
   };
 
-  const getCountryName = (countryId: number) => {
-    return (
-      countries.find((country) => country.id === countryId)?.name ||
-      "Unknown Country"
-    );
-  };
-
-  const getStateName = (stateId: number) => {
-    return (
-      states.find((state) => state.id === stateId)?.name || "Unknown State"
-    );
-  };
-
-  const getCityName = (cityId: number) => {
-    return cities.find((city) => city.id === cityId)?.name || "Unknown City";
-  };
 
   const fetchData = async () => {
     setIsLoading(true);
@@ -428,6 +413,7 @@ export default function ProfilePage() {
     setIsLoading(true);
     try {
       const res = await getShippingAddresses();
+      console.log(res);
       setShippingAddresses(res);
       // Initialize form data with user data
     } catch (err) {
@@ -499,19 +485,21 @@ export default function ProfilePage() {
 
   useEffect(() => {
     if (selectedCountry) {
-      fetchState(selectedCountry.id);
+      fetchState(selectedCountry);
     }
   }, [selectedCountry]);
 
   useEffect(() => {
-    if (selectedCity) {
-      fetchCity(selectedCity.id);
+    if (selectedState) {
+      fetchCity(selectedState);
     }
-  }, [selectedCity]);
+  }, [selectedState]);
 
   useEffect(() => {
-    fetchData();
     fetchCountry();
+  }, []);
+  useEffect(() => {
+    fetchData();
   }, []);
 
   useEffect(() => {
@@ -537,7 +525,7 @@ export default function ProfilePage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex items-end md:items-center md:flex-row flex-col justify-between">
         <div>
           <h1 className="text-3xl font-bold">Profile</h1>
           <p className="text-muted-foreground">
@@ -679,24 +667,6 @@ export default function ProfilePage() {
             </div>
 
             {/* Address */}
-            <div className="space-y-2">
-              <Label htmlFor="address" className="flex items-center gap-2">
-                <MapPin className="h-4 w-4" />
-                Address
-              </Label>
-              {isEditing ? (
-                <Textarea
-                  id="address"
-                  name="address"
-                  value={formData.address}
-                  onChange={handleInputChange}
-                  placeholder="Enter your address"
-                  rows={3}
-                />
-              ) : (
-                <p className="text-sm">{user.address || "Not provided"}</p>
-              )}
-            </div>
           </CardContent>
         </Card>
 
@@ -815,11 +785,63 @@ export default function ProfilePage() {
                     />
                   </div>
                 </div>
-                <div className="space-y-2 p-2 bg-muted rounded-md">
-                  <p className="text-sm text-muted-foreground">
-                    Country, State, City, and Coordinates are set to default
-                    values and cannot be changed.
-                  </p>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="space-y-2">
+                    <Label>Country</Label>
+                    <Combobox
+                      options={countryList.map((country) => ({
+                        value: country.id,
+                        label: country.name,
+                      }))}
+                      value={selectedCountry}
+                      onValueChange={handleCountryChange}
+                      placeholder="Select country"
+                      searchPlaceholder="Search country..."
+                      emptyText="No countries found."
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label>State</Label>
+                    <Combobox
+                      options={stateList.map((state) => ({
+                        value: state.id,
+                        label: state.name,
+                      }))}
+                      value={selectedState}
+                      onValueChange={handleStateChange}
+                      placeholder="Select state"
+                      searchPlaceholder="Search state..."
+                      emptyText="No states found."
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label>City</Label>
+                    <Combobox
+                      options={cityList.map((city) => ({
+                        value: city.id,
+                        label: city.name,
+                      }))}
+                      value={selectedCity}
+                      onValueChange={handleCityChange}
+                      placeholder="Select city"
+                      searchPlaceholder="Search city..."
+                      emptyText="No cities found."
+                    />
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="phone">Phone Number</Label>
+                    <Input
+                      id="phone"
+                      name="phone"
+                      value={addressForm.phone}
+                      onChange={handleAddressInputChange}
+                      placeholder="Phone number"
+                    />
+                  </div>
                 </div>
               </div>
               <div className="flex gap-2 mt-4">
@@ -849,7 +871,7 @@ export default function ProfilePage() {
                   key={address.id}
                   className="border rounded-lg p-4 relative"
                 >
-                  {address.is_default && (
+                  {address.set_default === 1 && (
                     <span className="absolute bottom-2 right-2 bg-primary text-primary-foreground text-xs px-2 py-1 rounded">
                       Default
                     </span>
@@ -857,8 +879,7 @@ export default function ProfilePage() {
 
                   <div className="flex justify-between items-start mb-2">
                     <h3 className="font-medium">
-                      {getCountryName(address.country_id)} -{" "}
-                      {getStateName(address.state_id)}
+                      {address.country_name},{address.city_name}
                     </h3>
                     <div className="relative">
                       <Button
@@ -876,7 +897,7 @@ export default function ProfilePage() {
                             className="w-full text-left px-3 py-2 text-sm hover:bg-muted flex items-center"
                             onClick={() => handleSetDefaultAddress(address.id)}
                           >
-                            {address.is_default ? (
+                            {address.set_default ? (
                               <Check className="h-4 w-4 mr-2" />
                             ) : (
                               <span className="w-4 h-4 mr-2"></span>
@@ -905,16 +926,16 @@ export default function ProfilePage() {
                   <p className="text-sm mb-2">
                     {address.address}
                     <br />
-                    {getCityName(address.city_id)},{" "}
-                    {getStateName(address.state_id)} {address.postal_code}
+                    {address.city_name}, {address.state_name},
+                    {address.postal_code}
                     <br />
-                    {getCountryName(address.country_id)}
+                    {address.country_name}
                     <br />
                     {address.phone}
                   </p>
-                  <div className="text-xs text-muted-foreground mt-2">
+                  {/* <div className="text-xs text-muted-foreground mt-2">
                     Coordinates: {address.latitude}, {address.longitude}
-                  </div>
+                  </div> */}
                 </div>
               ))}
             </div>

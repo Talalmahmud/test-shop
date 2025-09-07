@@ -83,10 +83,11 @@ const MobileMenu = ({ categories, isCookie }: MobileMenuProps) => {
             <SheetDescription className="text-base text-end">
               {isCookie && (
                 <SheetClose asChild>
-                  <Link href={"/user"}>
-                    <Button className=" h-8 w-8 bg-gray-400 rounded-full flex justify-center items-center">
-                      <UserRound size={14} />
-                    </Button>
+                  <Link
+                    href={"/user"}
+                    className=" text-gray-600 hover:text-black hover:underline"
+                  >
+                    Profile
                   </Link>
                 </SheetClose>
               )}
@@ -157,19 +158,30 @@ const MobileMenu = ({ categories, isCookie }: MobileMenuProps) => {
           </Accordion>
 
           <div className="mt-8 pt-6 border-t border-gray-200">
-            <h3 className="font-semibold mb-3">Account</h3>
-            <div className="flex flex-col gap-2">
-              {isCookie ? (
-                <SheetClose asChild>
-                  <Button
-                    variant="ghost"
-                    className="w-full justify-start text-red-600 hover:text-red-700 hover:bg-red-50"
-                    onClick={handleLogout}
-                  >
-                    <LogOut className="h-5 w-5 mr-3" />
-                    Log out
+            <div className=" flex items-center gap-2 mb-2">
+              <h3 className="font-semibold">Account</h3>
+              <SheetClose asChild>
+                <Link href={"/user"}>
+                  <Button className=" h-8 w-8 bg-gray-400 rounded-full flex justify-center items-center">
+                    <UserRound size={14} />
                   </Button>
-                </SheetClose>
+                </Link>
+              </SheetClose>
+            </div>
+            <div className="flex flex-col gap-1">
+              {isCookie ? (
+                <div className="  ">
+                  <SheetClose asChild>
+                    <Button
+                      variant="ghost"
+                      className="w-full justify-start text-red-600 hover:text-red-700 hover:bg-red-50"
+                      onClick={handleLogout}
+                    >
+                      <LogOut className="h-5 w-5 mr-3" />
+                      Log out
+                    </Button>
+                  </SheetClose>
+                </div>
               ) : (
                 <SheetClose asChild>
                   <Link
@@ -180,14 +192,16 @@ const MobileMenu = ({ categories, isCookie }: MobileMenuProps) => {
                   </Link>
                 </SheetClose>
               )}
-              <SheetClose asChild>
-                <Link
-                  href="/login"
-                  className="py-2 px-4 hover:bg-gray-100 rounded-md"
-                >
-                  Create Account
-                </Link>
-              </SheetClose>
+              {!isCookie && (
+                <SheetClose asChild>
+                  <Link
+                    href="/login"
+                    className="py-2 px-4 hover:bg-gray-100 rounded-md"
+                  >
+                    Create Account
+                  </Link>
+                </SheetClose>
+              )}
             </div>
           </div>
         </SheetContent>

@@ -246,13 +246,14 @@ export const setDefaultShippingAddress = async (
     }
 
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_URL}/user/shipping-addresses/${id}/set-default`,
+      `${process.env.NEXT_PUBLIC_BASE_URL}/user/shipping/make_default`,
       {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
+        body: JSON.stringify({ id: id }),
       }
     );
 
