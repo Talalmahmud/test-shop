@@ -101,7 +101,7 @@ const Header = async () => {
 
       <div className="flex flex-col items-center gap-1">
         <Link href={"/"} className="active:animate-ping">
-          <Image src={"/logo.jpeg"} alt="Logo" width={50} height={50} />
+          <Image src={"/logo.svg"} alt="Logo" width={36} height={36} />
         </Link>
       </div>
 

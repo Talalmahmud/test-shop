@@ -73,7 +73,7 @@ const MobileMenu = ({ categories, isCookie }: MobileMenuProps) => {
             <SheetTitle className="text-xl font-bold">
               <SheetClose asChild>
                 <Link href={"/"}>
-                  <Image src={"/logo.jpeg"} alt="Logo" width={40} height={10} />
+                  <Image src={"/logo.svg"} alt="Logo" width={40} height={10} />
                 </Link>
               </SheetClose>
             </SheetTitle>
