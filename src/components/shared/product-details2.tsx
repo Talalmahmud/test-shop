@@ -260,26 +260,11 @@ export default function ProductDetailClient({
     );
     setSelectedVariant(variant || null);
   }, [product.variants, selectedColor, selectedOptions]);
-
+  // console.log(selectedVariant);
   // handle option (like length, width)
   const handleOptionSelect = (optionName: string, value: string) => {
-    setSelectedOptions((prev) => ({ ...prev, [optionName]: value }));
-  };
-
-  // find selected variant
-  const findSelectedVariant = () => {
-    if (!selectedColor || Object.keys(selectedOptions).length === 0)
-      return null;
-
-    // variant names in API look like: Black-18inch-7mm
-    const variantName = [
-      product.specifications.colors.find(
-        (c: Color) => c.hex_code === selectedColor.hex_code
-      )?.name || "",
-      ...Object.values(selectedOptions),
-    ].join("-");
-
-    return product.variants.find((v: Variant) => v.variant === variantName);
+    const noSpaces = value.replaceAll(" ", "");
+    setSelectedOptions((prev) => ({ ...prev, [optionName]: noSpaces }));
   };
 
   const currentPrice = selectedVariant?.price || product.pricing.base_price;
@@ -423,7 +408,7 @@ export default function ProductDetailClient({
                     <Button
                       key={idx}
                       variant={
-                        selectedOptions[attr.name] === value
+                        selectedOptions[attr.name] === value.replaceAll(" ", "")
                           ? "default"
                           : "outline"
                       }
