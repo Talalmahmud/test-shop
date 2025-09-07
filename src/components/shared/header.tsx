@@ -105,7 +105,7 @@ const Header = async () => {
         </Link>
       </div>
 
-      <div className=" flex justify-end items-center w-full space-x-4 pr-6">
+      <div className=" flex justify-end items-center w-full space-x-2 pr-6">
         <ProductSearch />
         <Link
           href={cookie.get("token") ? "/user" : "/login"}

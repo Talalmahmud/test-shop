@@ -149,8 +149,14 @@ const ProductSlider2 = ({ slides, className }: Props) => {
               className="!overflow-visible"
             >
               {filteredSlides.map((slide) => (
-                <SwiperSlide key={slide.id} className="!w-[350px]">
-                  <ProductCard2 className="w-full sm:w-[350px]" item={slide} />
+                <SwiperSlide
+                  key={slide.id}
+                  className=" !w-[300px] md:!w-[350px]"
+                >
+                  <ProductCard2
+                    className="w-[300px] md:w-[350px]"
+                    item={slide}
+                  />
                 </SwiperSlide>
               ))}
             </Swiper>
@@ -161,13 +167,13 @@ const ProductSlider2 = ({ slides, className }: Props) => {
               variant="outline"
               size="icon"
               className={cn(
-                "absolute left-2 top-1/2 z-10 -translate-y-1/2 rounded-full bg-white backdrop-blur-sm transition-all hover:bg-slate-300 shadow-lg border-2 border-gray-200",
+                " hidden md:flex justify-center items-center absolute left-2 top-1/2 z-10 -translate-y-1/2 rounded-full bg-white backdrop-blur-sm transition-all hover:bg-slate-300 shadow-lg border-2 border-gray-200",
                 "h-12 w-12",
                 isBeginning && "opacity-0 pointer-events-none"
               )}
               aria-label="Previous slide"
             >
-              <ChevronLeft className="min-h-6 min-w-6" />
+              <ChevronLeft className="min-h-6 min-w-6 " />
             </Button>
 
             <Button
@@ -175,7 +181,7 @@ const ProductSlider2 = ({ slides, className }: Props) => {
               variant="outline"
               size="icon"
               className={cn(
-                "absolute right-2 top-1/2 z-10 -translate-y-1/2 rounded-full bg-white backdrop-blur-sm transition-all hover:bg-slate-300 shadow-lg border-2 border-gray-200",
+                "hidden md:flex justify-center items-center absolute right-2 top-1/2 z-10 -translate-y-1/2 rounded-full bg-white backdrop-blur-sm transition-all hover:bg-slate-300 shadow-lg border-2 border-gray-200",
                 "h-12 w-12",
                 isEnd && "opacity-0 pointer-events-none"
               )}

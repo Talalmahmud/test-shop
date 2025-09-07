@@ -242,7 +242,7 @@ export default function ProductDetailClient({
   const [selectedOptions, setSelectedOptions] = useState<
     Record<string, string>
   >({});
-  const [quantity, setQuantity] = useState<number>(1);
+
 
   // handle option (like length, width)
   const handleOptionSelect = (optionName: string, value: string) => {
@@ -278,7 +278,7 @@ export default function ProductDetailClient({
       return;
     }
     // You can call your API/cart context here
-    const res = await addToCart(product.id, selectedVariant.variant, quantity);
+    const res = await addToCart(product.id, selectedVariant.variant, 1);
     console.log(res);
   };
 
