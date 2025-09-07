@@ -72,8 +72,11 @@ const MobileMenu = ({ categories, isCookie }: MobileMenuProps) => {
           <SheetHeader className="mb-6">
             <SheetTitle className="text-xl font-bold">
               <SheetClose asChild>
-                <Link href={"/"}>
-                  <Image src={"/logo.svg"} alt="Logo" width={40} height={10} />
+                <Link href={"/"} className=" flex">
+                  <Image src={"/logo.svg"} alt="Logo" width={30} height={30} />
+                  <h2 className=" text-xl font-bold font-sans">
+                    CUT<span className=" text-[#7d5c0a]">X</span>
+                  </h2>
                 </Link>
               </SheetClose>
             </SheetTitle>

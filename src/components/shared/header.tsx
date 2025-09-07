@@ -99,10 +99,13 @@ const Header = async () => {
         </NavigationMenuList>
       </NavigationMenu>
 
-      <div className="flex flex-col items-center gap-1">
+      <div className="flex justify-center items-center gap-1">
         <Link href={"/"} className="active:animate-ping">
-          <Image src={"/logo.svg"} alt="Logo" width={36} height={36} />
+          <Image src={"/logo.svg"} alt="Logo" width={24} height={24} />
         </Link>
+        <h2 className=" text-2xl font-bold font-sans">
+          CUT<span className=" text-[#7d5c0a]">X</span>
+        </h2>
       </div>
 
       <div className=" flex justify-end items-center w-full space-x-2 pr-6">
