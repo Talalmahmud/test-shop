@@ -86,100 +86,111 @@ export default function ProfilePage() {
             Manage your account information and settings
           </p>
         </div>
-        {!isEditing ? (
-          <Button onClick={() => setIsEditing(true)} className="flex gap-2">
-            <Edit className="h-4 w-4" />
-            Edit Profile
-          </Button>
-        ) : (
-          <div className="flex gap-2">
-            <Button
-              variant="outline"
-              onClick={() => setIsEditing(false)}
-              disabled={isSaving}
-            >
-              Cancel
-            </Button>
-            <Button onClick={handleSave} disabled={isSaving}>
-              {isSaving ? "Saving..." : "Save Changes"}
-              <Save className="h-4 w-4 ml-2" />
-            </Button>
-          </div>
-        )}
       </div>
 
       {/* Personal Info */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Personal Information</CardTitle>
-          <CardDescription>Your basic profile details</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          {/* Avatar */}
-          <div className="flex items-center gap-4">
-            <Avatar className="h-20 w-20">
-              <AvatarImage src={user.avatar || ""} alt={user.name} />
-              <AvatarFallback>{getInitials(user.name)}</AvatarFallback>
-            </Avatar>
-            {isEditing && (
-              <Label htmlFor="avatar" className="cursor-pointer">
-                <Camera className="h-4 w-4" /> Change Photo
-                <Input id="avatar" type="file" className="hidden" />
+      <div className=" w-full flex flex-col lg:flex-row gap-6">
+        <Card className=" w-full lg:w-1/2">
+          <CardHeader>
+            <CardTitle className=" flex justify-between">
+              Personal Information{" "}
+              {!isEditing ? (
+                <Button
+                  onClick={() => setIsEditing(true)}
+                  className="flex gap-2"
+                >
+                  <Edit className="h-4 w-4" />
+                  Edit Profile
+                </Button>
+              ) : (
+                <div className="flex gap-2">
+                  <Button
+                    variant="outline"
+                    onClick={() => setIsEditing(false)}
+                    disabled={isSaving}
+                  >
+                    Cancel
+                  </Button>
+                  <Button onClick={handleSave} disabled={isSaving}>
+                    {isSaving ? "Saving..." : "Save Changes"}
+                    <Save className="h-4 w-4 ml-2" />
+                  </Button>
+                </div>
+              )}
+            </CardTitle>
+            <CardDescription>Your basic profile details</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            {/* Avatar */}
+            <div className="flex items-center gap-4">
+              <Avatar className="h-20 w-20">
+                <AvatarImage src={user.avatar || ""} alt={user.name} />
+                <AvatarFallback>{getInitials(user.name)}</AvatarFallback>
+              </Avatar>
+              {isEditing && (
+                <Label htmlFor="avatar" className="cursor-pointer">
+                  <Camera className="h-4 w-4" /> Change Photo
+                  <Input id="avatar" type="file" className="hidden" />
+                </Label>
+              )}
+            </div>
+
+            {/* Name */}
+            <div>
+              <Label>Name</Label>
+              {isEditing ? (
+                <Input
+                  name="name"
+                  value={formData.name}
+                  onChange={(e) =>
+                    setFormData((p) => ({ ...p, name: e.target.value }))
+                  }
+                />
+              ) : (
+                <p>{user.name}</p>
+              )}
+            </div>
+
+            {/* Email */}
+            <div>
+              <Label>
+                Email <Mail size={14} />
               </Label>
-            )}
-          </div>
+              {isEditing ? (
+                <Input
+                  type="email"
+                  value={formData.email}
+                  onChange={(e) =>
+                    setFormData((p) => ({ ...p, email: e.target.value }))
+                  }
+                />
+              ) : (
+                <p>{user.email}</p>
+              )}
+            </div>
 
-          {/* Name */}
-          <div>
-            <Label>Name</Label>
-            {isEditing ? (
-              <Input
-                name="name"
-                value={formData.name}
-                onChange={(e) =>
-                  setFormData((p) => ({ ...p, name: e.target.value }))
-                }
-              />
-            ) : (
-              <p>{user.name}</p>
-            )}
-          </div>
+            {/* Phone */}
+            <div>
+              <Label>
+                Phone <Phone size={14} />
+              </Label>
+              {isEditing ? (
+                <Input
+                  value={formData.phone}
+                  onChange={(e) =>
+                    setFormData((p) => ({ ...p, phone: e.target.value }))
+                  }
+                />
+              ) : (
+                <p>{user.phone || "Not provided"}</p>
+              )}
+            </div>
+          </CardContent>
+        </Card>
 
-          {/* Email */}
-          <div>
-            <Label>Email</Label>
-            {isEditing ? (
-              <Input
-                type="email"
-                value={formData.email}
-                onChange={(e) =>
-                  setFormData((p) => ({ ...p, email: e.target.value }))
-                }
-              />
-            ) : (
-              <p>{user.email}</p>
-            )}
-          </div>
-
-          {/* Phone */}
-          <div>
-            <Label>Phone</Label>
-            {isEditing ? (
-              <Input
-                value={formData.phone}
-                onChange={(e) =>
-                  setFormData((p) => ({ ...p, phone: e.target.value }))
-                }
-              />
-            ) : (
-              <p>{user.phone || "Not provided"}</p>
-            )}
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Shipping Address Section */}
-      <ShippingAddressSection userId={user.id} />
+        {/* Shipping Address Section */}
+        <ShippingAddressSection userId={user.id} />
+      </div>
     </div>
   );
 }

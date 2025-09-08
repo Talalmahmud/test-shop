@@ -136,7 +136,7 @@ export function ShippingAddressSection({ userId }: { userId: number }) {
   };
   console.log(selectedCountry);
   return (
-    <Card>
+    <Card className=" w-full">
       <CardHeader className="flex justify-between">
         <div>
           <CardTitle>Shipping Addresses</CardTitle>
