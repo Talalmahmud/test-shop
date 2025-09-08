@@ -48,6 +48,7 @@ const Cart = () => {
         {/* Header */}
         <SheetHeader className="px-4 py-4 border-b">
           <div className="flex items-center justify-between">
+            <SheetTitle></SheetTitle>
             <SheetClose asChild>
               <button className="flex items-center text-blue-600 hover:text-blue-800 transition-colors">
                 <ArrowLeft className="mr-2 h-5 w-5" />

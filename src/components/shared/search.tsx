@@ -31,57 +31,37 @@ const ProductSearch = () => {
     "Leather",
   ];
 
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (debouncedQuery.trim()) {
-      console.log("Searching for:", debouncedQuery);
-      // This will trigger the useEffect below
-      setSearchQuery(debouncedQuery);
-    }
-  };
-
-  // Debounce effect
+  // Debounce input
   useEffect(() => {
     const handler = setTimeout(() => {
       setDebouncedQuery(searchQuery);
-    }, 500); // 500ms delay
-
-    return () => {
-      clearTimeout(handler);
-    };
+    }, 500);
+    return () => clearTimeout(handler);
   }, [searchQuery]);
 
-  // Function to fetch products
+  // Fetch products
   const getProduct = useCallback(async (query: string) => {
     if (!query.trim()) {
       setProductList([]);
       return;
     }
-
     setIsLoading(true);
     setError("");
-
     try {
       const products = await productSearch(query);
-      console.log("Search results:", products);
       setProductList(products.data.products);
     } catch (err) {
-      console.error("Search error:", err);
       setError("Failed to fetch search results");
+      console.log(err);
       setProductList([]);
     } finally {
       setIsLoading(false);
     }
   }, []);
 
-  // React to debounced search query
   useEffect(() => {
-    if (debouncedQuery) {
-      console.log("Debounced search query:", debouncedQuery);
-      getProduct(debouncedQuery);
-    } else {
-      setProductList([]);
-    }
+    if (debouncedQuery) getProduct(debouncedQuery);
+    else setProductList([]);
   }, [debouncedQuery, getProduct]);
 
   const clearSearch = () => {
@@ -93,32 +73,34 @@ const ProductSearch = () => {
   return (
     <Sheet>
       <SheetTrigger>
-        <div className="h-8 w-8 bg-gray-200 rounded-full flex justify-center items-center">
-          <Search size={14} />
+        <div className="h-9 w-9 bg-gray-100 rounded-full flex justify-center items-center hover:bg-gray-200 transition">
+          <Search size={18} className="text-gray-600" />
         </div>
       </SheetTrigger>
-      <SheetContent className=" min-w-full sm:min-w-[400px] md:min-w-[500px] lg:min-w-[500px] xl:min-w-[500px] 2xl:min-w-[600px] flex ">
-        <SheetHeader className="">
+
+      <SheetContent className="min-w-full sm:min-w-[400px] md:min-w-[500px] lg:min-w-[600px] flex flex-col p-0">
+        {/* Header */}
+        <SheetHeader className="border-b p-4">
           <SheetTitle className="flex justify-between items-center font-bold">
             <SheetClose asChild>
-              <button className="flex items-center text-blue-600 text-[24px] font-medium hover:underline">
-                <ArrowLeft className="mr-2" />
+              <button className="flex items-center text-blue-600 text-lg font-medium hover:underline">
+                <ArrowLeft className="mr-2 h-5 w-5" />
                 Back to Shopping
               </button>
             </SheetClose>
           </SheetTitle>
-          <SheetDescription className="text-base ">
-            <div className="relative mt-4 border-t-[1px] border-b-[1px] border-gray-300 py-4">
+          <SheetDescription className="mt-4">
+            <div className="relative">
               <Search
                 className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
                 size={20}
               />
               <input
                 type="text"
-                placeholder="Search here"
+                placeholder="Search for products..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-10 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent outline-none"
+                className="w-full pl-10 pr-10 py-3 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-black focus:border-transparent outline-none"
               />
               {searchQuery && (
                 <button
@@ -126,68 +108,69 @@ const ProductSearch = () => {
                   onClick={clearSearch}
                   className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
                 >
-                  <X size={20} />
+                  <X size={18} />
                 </button>
               )}
             </div>
           </SheetDescription>
         </SheetHeader>
 
-        <div className="px-4">
-          {/* Search Input */}
-
-          {/* Loading State */}
+        {/* Body */}
+        <div className="p-4 flex-1 overflow-y-auto">
+          {/* Loading */}
           {isLoading && (
-            <div className="py-4 text-center text-gray-500">Searching...</div>
+            <div className="py-6 text-center text-gray-500">Searching...</div>
           )}
 
-          {/* Error State */}
+          {/* Error */}
           {error && (
-            <div className="py-4 text-center text-red-500">{error}</div>
+            <div className="py-6 text-center text-red-500">{error}</div>
           )}
 
-          {/* Search Results */}
+          {/* Results */}
           {productList.length > 0 && (
-            <div className="mb-8">
+            <div>
               <h3 className="text-lg font-semibold mb-4 text-gray-800">
                 Search Results
               </h3>
-              <div className="flex flex-col gap-2 h-[400px] overflow-y-auto scrollbar-hide">
+              <div className="flex flex-col gap-3">
                 {productList.map(
                   (
                     product: {
+                      slug: string;
                       thumbnail: string;
                       name: string;
-                      base_price_formatted: string;
                       discounted_price_formatted: string;
-                      id: number;
-                      slug: string;
+                      base_price_formatted: string;
                     },
                     index
                   ) => (
                     <Link
                       href={`/product/${product.slug}`}
                       key={index}
-                      className=" "
+                      className="block"
                     >
-                      {" "}
                       <SheetClose asChild>
-                        <div className=" flex gap-2 border rounded-lg hover:bg-gray-50 cursor-pointer">
+                        <div className="flex gap-3 border rounded-lg hover:shadow-md transition overflow-hidden">
                           <Image
                             src={product.thumbnail}
-                            alt=""
+                            alt={product.name}
                             height={100}
-                            width={150}
-                            className=" object-cover h-[120px] min-w-[150px] rounded-l-md"
+                            width={100}
+                            className="object-cover h-[100px] w-[100px] sm:h-[120px] sm:w-[120px] flex-shrink-0"
                           />
-                          <div className=" space-y-1">
-                            <p className=" font-semibold text-[14px] line-clamp-2">
+                          <div className="flex flex-col justify-between p-2 flex-1">
+                            <p className="font-semibold text-sm sm:text-base line-clamp-2">
                               {product.name}
                             </p>
-                            <p>{product.discounted_price_formatted}</p>
-                            <p className=" line-through">
-                              {product.base_price_formatted}
-                            </p>
+                            <div className="mt-1">
+                              <p className="text-red-600 font-semibold">
+                                {product.discounted_price_formatted}
+                              </p>
+                              <p className="text-gray-400 text-sm line-through">
+                                {product.base_price_formatted}
+                              </p>
+                            </div>
                           </div>
                         </div>
                       </SheetClose>
@@ -198,18 +181,18 @@ const ProductSearch = () => {
             </div>
           )}
 
-          {/* Popular Search Terms - Only show when no search results */}
+          {/* Popular Searches */}
           {!isLoading && productList.length === 0 && !error && (
             <div>
               <h3 className="text-lg font-semibold mb-4 text-gray-800">
-                Top search terms
+                Popular Searches
               </h3>
               <div className="flex flex-wrap gap-2">
                 {popularSearches.map((term, index) => (
                   <button
                     key={index}
                     onClick={() => setSearchQuery(term)}
-                    className="px-3 py-1.5 bg-gray-100 rounded-full text-gray-700 hover:bg-gray-200 transition-colors"
+                    className="px-3 py-1.5 bg-gray-100 rounded-full text-sm text-gray-700 hover:bg-gray-200 transition"
                   >
                     {term}
                   </button>
