@@ -309,19 +309,11 @@ export const getCountries = async () => {
 
 export const getCitiesBYState = async (id: string) => {
   try {
-    const token = await getToken();
-
-    if (!token) {
-      console.error("No authentication token found");
-      return [];
-    }
-
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_BASE_URL}/cities-by-state/${id}`,
       {
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -344,20 +336,13 @@ export const getCitiesBYState = async (id: string) => {
   }
 };
 export const getSateByCountry = async (id: string) => {
+  console.log(id);
   try {
-    const token = await getToken();
-
-    if (!token) {
-      console.error("No authentication token found");
-      return [];
-    }
-
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_BASE_URL}/states-by-country/${id}`,
       {
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );

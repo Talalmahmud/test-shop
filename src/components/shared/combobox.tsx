@@ -1,9 +1,9 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import { Check, ChevronsUpDown } from "lucide-react"
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
+import * as React from "react";
+import { Check, ChevronsUpDown } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 import {
   Command,
   CommandEmpty,
@@ -11,33 +11,37 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-} from "@/components/ui/command"
+} from "@/components/ui/command";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover"
+} from "@/components/ui/popover";
 
 interface ComboboxOption {
-  value: string
-  label: string
+  value: string;
+  label: string;
 }
 
 interface ComboboxProps {
-  options: ComboboxOption[]
-  value?: string
-  onValueChange?: (value: string) => void
-  placeholder?: string
-  searchPlaceholder?: string
-  emptyText?: string
-  className?: string
-  buttonClassName?: string
-  contentClassName?: string
+  options: ComboboxOption[];
+  value?: ComboboxOption | null;
+  defaultValue?: ComboboxOption | null;
+  onValueChange?: (option: ComboboxOption | null) => void;
+  placeholder?: string;
+  searchPlaceholder?: string;
+  emptyText?: string;
+  className?: string;
+  buttonClassName?: string;
+  contentClassName?: string;
+  disabled?: boolean;
+  fullWidth?: boolean;
 }
 
 export function Combobox({
   options,
   value,
+  defaultValue,
   onValueChange,
   placeholder = "Select an option...",
   searchPlaceholder = "Search...",
@@ -45,25 +49,27 @@ export function Combobox({
   className,
   buttonClassName,
   contentClassName,
+  disabled = false,
+  fullWidth = false,
 }: ComboboxProps) {
-  const [open, setOpen] = React.useState(false)
-  const [internalValue, setInternalValue] = React.useState(value || "")
+  const [open, setOpen] = React.useState(false);
+  const [internalValue, setInternalValue] =
+    React.useState<ComboboxOption | null>(value ?? defaultValue ?? null);
 
-  // Update internal value when prop changes
+  // Sync controlled value
   React.useEffect(() => {
     if (value !== undefined) {
-      setInternalValue(value)
+      setInternalValue(value ?? null);
     }
-  }, [value])
+  }, [value]);
 
-  const handleValueChange = (newValue: string) => {
-    const finalValue = newValue === internalValue ? "" : newValue
-    setInternalValue(finalValue)
-    onValueChange?.(finalValue)
-    setOpen(false)
-  }
-
-  const selectedOption = options.find((option) => option.value === internalValue)
+  const handleValueChange = (newOption: ComboboxOption) => {
+    const isSame = internalValue?.value === newOption.value;
+    const finalOption = isSame ? null : newOption;
+    setInternalValue(finalOption);
+    onValueChange?.(finalOption);
+    setOpen(false);
+  };
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -72,13 +78,24 @@ export function Combobox({
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className={cn("w-[200px] justify-between", buttonClassName)}
+          disabled={disabled}
+          className={cn(
+            fullWidth ? "w-full" : "w-[200px]",
+            "justify-between",
+            buttonClassName
+          )}
         >
-          {selectedOption ? selectedOption.label : placeholder}
+          {internalValue ? internalValue.label : placeholder}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className={cn("w-[200px] p-0", contentClassName)}>
+      <PopoverContent
+        className={cn(
+          fullWidth ? "w-full" : "w-[200px]",
+          "p-0",
+          contentClassName
+        )}
+      >
         <Command>
           <CommandInput placeholder={searchPlaceholder} className="h-9" />
           <CommandList>
@@ -87,14 +104,16 @@ export function Combobox({
               {options.map((option) => (
                 <CommandItem
                   key={option.value}
-                  value={option.value}
-                  onSelect={handleValueChange}
+                  value={option.label} // for filtering
+                  onSelect={() => handleValueChange(option)} // return full object
                 >
                   {option.label}
                   <Check
                     className={cn(
                       "ml-auto",
-                      internalValue === option.value ? "opacity-100" : "opacity-0"
+                      internalValue?.value === option.value
+                        ? "opacity-100"
+                        : "opacity-0"
                     )}
                   />
                 </CommandItem>
@@ -104,5 +123,5 @@ export function Combobox({
         </Command>
       </PopoverContent>
     </Popover>
-  )
+  );
 }
