@@ -1,5 +1,11 @@
 "use client";
-import { AlignJustify, LogOut, Menu, UserRound } from "lucide-react";
+import {
+  AlignJustify,
+  BackpackIcon,
+  LogOut,
+  Menu,
+  UserRound,
+} from "lucide-react";
 import React from "react";
 import {
   Sheet,
@@ -70,7 +76,7 @@ const MobileMenu = ({ categories, isCookie }: MobileMenuProps) => {
         </SheetTrigger>
         <SheetContent className="px-4 min-w-full sm:min-w-[400px] md:min-w-[500px] lg:min-w-[500px] xl:min-w-[500px] 2xl:min-w-[600px] overflow-y-auto">
           <SheetHeader className="mb-6">
-            <SheetTitle className="text-xl font-bold">
+            <SheetTitle className="text-xl flex justify-between font-bold">
               <SheetClose asChild>
                 <Link href={"/"} className=" flex">
                   <Image src={"/logo.svg"} alt="Logo" width={30} height={30} />
