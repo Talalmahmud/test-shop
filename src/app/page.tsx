@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import Link from "next/link";
 
-
 type Category = {
   id: number;
   name: string;
@@ -64,8 +63,10 @@ export default async function Home() {
     <div>
       <Hero photos={fetchHero.data} />
 
-      <div className="py-10 px-6 lg:px-20">
-        <h2 className="text-[40px] font-serif ">Shop Best Sellers</h2>
+      <div className=" py-6 md:py-10 px-6 lg:px-20">
+        <h2 className="text-[30px] md:text-[40px] font-serif ">
+          Shop Best Sellers
+        </h2>
         {/* <div className=" flex items-center gap-2 py-4">
           <Button className=" rounded-full">men</Button>{" "}
           <Button className=" rounded-full">women</Button>
@@ -73,8 +74,10 @@ export default async function Home() {
         <ProductSlider2 slides={bestSelling.data.products} />
       </div>
 
-      <div className="py-10 px-6 lg:px-20">
-        <h2 className="text-[40px] font-serif ">Shop New Releases</h2>
+      <div className=" py-6 md:py-10 px-6 lg:px-20">
+        <h2 className="text-[30px] md:text-[40px] font-serif ">
+          Shop New Releases
+        </h2>
         {/* <div className=" flex items-center gap-2 py-4">
           <Button className=" rounded-full">men</Button>{" "}
           <Button className=" rounded-full">women</Button>
@@ -83,8 +86,10 @@ export default async function Home() {
         <ProductSlider2 slides={newProduct.data.products} />
       </div>
 
-      <div className="py-10 px-6 lg:px-7">
-        <h2 className="text-[40px] font-serif ">Shop by Category</h2>
+      <div className=" py-6 md:py-10 px-6 lg:px-7">
+        <h2 className="text-[30px] md:text-[40px] font-serif ">
+          Shop by Category
+        </h2>
         <div className="h-[1px] w-full bg-slate-300 my-2"></div>
         <div className=" hidden md:block space-y-6">
           {rows.map((row, rowIndex) => {
@@ -148,7 +153,7 @@ export default async function Home() {
         </div>
       </div>
 
-      {/* <div className="py-10 px-6 lg:px-20">
+      {/* <div className=" py-6 md:py-10 px-6 lg:px-20">
         <h2 className="text-[40px] font-serif ">Trending Collections</h2>
         <div className=" flex items-center gap-2 py-4">
           <Button className=" rounded-full">men</Button>{" "}
@@ -158,15 +163,17 @@ export default async function Home() {
         <ProductSlider2 slides={trendingProduct.data.products} />
       </div> */}
 
-      <div className="py-10 px-6 lg:px-7">
-        <h2 className="text-[40px] font-serif ">Trending Collections</h2>
+      <div className=" py-6 md:py-10 px-6 lg:px-7">
+        <h2 className=" text-[30px] md:text-[40px] font-serif ">
+          Trending Collections
+        </h2>
         {/* <TrendCollection /> */}
         <ProductSlider2 slides={trendingProduct.data.products} />
       </div>
 
-      <div className="py-10 px-6 lg:px-7">
+      <div className=" py-6 md:py-10 px-6 lg:px-7">
         <div className=" grid grid-cols-1 sm:grid-cols-2 gap-6">
-          <div className=" w-full h-[600px] relative">
+          <div className=" w-full h-[400px] md:h-[500px] lg:h-[600px] relative">
             <Image
               src="https://images.unsplash.com/photo-1567401893414-76b7b1e5a7a5?q=80&w=1740&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
               alt="Sale Banner"
@@ -187,7 +194,7 @@ export default async function Home() {
               </div>
             </div>
           </div>
-          <div className=" w-full h-[600px] relative">
+          <div className=" w-full h-[400px] md:h-[500px] lg:h-[600px] relative">
             <Image
               src="https://images.unsplash.com/photo-1441984904996-e0b6ba687e04?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
               alt="Sale Banner"

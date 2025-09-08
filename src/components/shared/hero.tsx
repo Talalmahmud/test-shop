@@ -71,12 +71,16 @@ const Hero = ({ photos }: Props) => {
   }, [swiperInstance]);
 
   return (
-    <section className="relative h-[700px] w-full overflow-hidden">
+    <section className="relative h-[500px] md:h-[700px] w-full overflow-hidden">
       <Swiper
-        modules={[Navigation, Pagination, EffectFade]}
+        modules={[Navigation, Pagination, EffectFade, Autoplay, EffectFade]}
         navigation={{
           prevEl: prevRef.current,
           nextEl: nextRef.current,
+        }}
+        autoplay={{
+          delay: 2000,
+          disableOnInteraction: false,
         }}
         pagination={{
           clickable: true,
@@ -86,7 +90,7 @@ const Hero = ({ photos }: Props) => {
         }}
         effect="fade"
         fadeEffect={{ crossFade: true }}
-        className="h-[700px] w-full"
+        className="h-[500px] md:h-[700px] w-full"
         onSwiper={setSwiperInstance}
       >
         {photos.map((slide, index: number) => (
