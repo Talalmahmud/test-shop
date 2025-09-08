@@ -264,9 +264,9 @@ export function ShippingAddressSection({ userId }: { userId: number }) {
                 >
                   Set Default
                 </Button>
-                <Button variant="destructive" size="sm">
+                {/* <Button variant="destructive" size="sm">
                   <Trash2 className="h-4 w-4" />
-                </Button>
+                </Button> */}
               </div>
             </div>
           ))}
