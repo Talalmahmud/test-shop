@@ -107,7 +107,6 @@ export const getShippingAddresses = async () => {
       return [];
     }
     const d = await res.json();
-    console.log(d);
 
     return d.data;
   } catch (error) {
@@ -298,7 +297,6 @@ export const getCountries = async () => {
       return [];
     }
     const d = await res.json();
-    console.log(d);
 
     return d.data;
   } catch (error) {
@@ -327,7 +325,6 @@ export const getCitiesBYState = async (id: string) => {
       return [];
     }
     const d = await res.json();
-    console.log(d);
 
     return d.data;
   } catch (error) {
@@ -336,7 +333,6 @@ export const getCitiesBYState = async (id: string) => {
   }
 };
 export const getSateByCountry = async (id: string) => {
-  console.log(id);
   try {
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_BASE_URL}/states-by-country/${id}`,
@@ -356,7 +352,6 @@ export const getSateByCountry = async (id: string) => {
       return [];
     }
     const d = await res.json();
-    console.log(d);
 
     return d.data;
   } catch (error) {
