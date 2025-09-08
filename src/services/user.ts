@@ -13,6 +13,10 @@ export interface ShippingAddress {
   created_at?: string;
   updated_at?: string;
 }
+export interface imageData {
+  image: string;
+  filename: string;
+}
 import { getToken } from "./token";
 
 export const getUserProfile = async () => {
@@ -191,6 +195,45 @@ export const updateShippingAddress = async (
     }
 
     return await res.json();
+  } catch (error) {
+    console.error("Error updating shipping address:", error);
+    return null;
+  }
+};
+export const updateUserImage = async (addressData: Partial<imageData>) => {
+  try {
+    const token = await getToken();
+
+    if (!token) {
+      console.error("No authentication token found");
+      return null;
+    }
+
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/profile/update-image`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(addressData),
+      }
+    );
+
+    if (!res.ok) {
+      const errorData = await res.json().catch(() => ({}));
+      console.log(
+        "Failed to update shipping address:",
+        res.status,
+        res.statusText,
+        errorData
+      );
+      return null;
+    }
+    const d = await res.json();
+    console.log(d);
+    return await d.data;
   } catch (error) {
     console.error("Error updating shipping address:", error);
     return null;

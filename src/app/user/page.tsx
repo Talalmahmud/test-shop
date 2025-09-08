@@ -15,7 +15,7 @@ import { Label } from "@/components/ui/label";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Camera, Save, Edit, Mail, Phone } from "lucide-react";
 
-import { getUserProfile } from "@/services/user";
+import { getUserProfile, updateUserImage } from "@/services/user";
 import { updateUserProfile } from "../action";
 import { ShippingAddressSection } from "@/components/shared/user-shipping-address";
 
@@ -36,11 +36,18 @@ interface UserProfile {
 export default function ProfilePage() {
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
+
   const [user, setUser] = useState<UserProfile | null>(null);
   const [formData, setFormData] = useState({ name: "", email: "", phone: "" });
 
+  const [avatarBase64, setAvatarBase64] = useState<string | null>(null);
+  const [avatarFileName, setAvatarFileName] = useState<string | null>(null);
+
+  // Fetch profile data
   const fetchData = async () => {
     const res = await getUserProfile();
+    console.log(res);
     setUser(res);
     setFormData({
       name: res.name,
@@ -53,6 +60,45 @@ export default function ProfilePage() {
     fetchData();
   }, []);
 
+  // Convert file to base64
+  const fileToBase64 = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = (error) => reject(error);
+    });
+  };
+
+  // Handle avatar select
+  const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      const base64 = await fileToBase64(file);
+      setAvatarBase64(base64);
+      setAvatarFileName(file.name);
+    }
+  };
+
+  // Upload avatar to API
+  const handleUploadImage = async () => {
+    console.log({ image: avatarBase64, fileName: avatarFileName });
+    if (!avatarBase64 || !avatarFileName) return;
+
+    setIsUploading(true);
+    try {
+      await updateUserImage({ image: avatarBase64, filename: avatarFileName });
+      fetchData();
+      alert("Image uploaded successfully!");
+    } catch (err) {
+      console.error(err);
+      alert("❌ Failed to upload image");
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  // Save profile
   const handleSave = async () => {
     setIsSaving(true);
     try {
@@ -89,10 +135,10 @@ export default function ProfilePage() {
       </div>
 
       {/* Personal Info */}
-      <div className=" w-full flex flex-col lg:flex-row gap-6">
-        <Card className=" w-full lg:w-1/2">
+      <div className="w-full flex flex-col lg:flex-row gap-6">
+        <Card className="w-full lg:w-1/2">
           <CardHeader>
-            <CardTitle className=" flex justify-between">
+            <CardTitle className="flex justify-between">
               Personal Information{" "}
               {!isEditing ? (
                 <Button
@@ -124,14 +170,39 @@ export default function ProfilePage() {
             {/* Avatar */}
             <div className="flex items-center gap-4">
               <Avatar className="h-20 w-20">
-                <AvatarImage src={user.avatar || ""} alt={user.name} />
+                <AvatarImage
+                  src={avatarBase64 || user.avatar || ""}
+                  alt={user.name}
+                />
                 <AvatarFallback>{getInitials(user.name)}</AvatarFallback>
               </Avatar>
+
               {isEditing && (
-                <Label htmlFor="avatar" className="cursor-pointer">
-                  <Camera className="h-4 w-4" /> Change Photo
-                  <Input id="avatar" type="file" className="hidden" />
-                </Label>
+                <div className="flex flex-col gap-2">
+                  <Label
+                    htmlFor="avatar"
+                    className="cursor-pointer flex items-center gap-2"
+                  >
+                    <Camera className="h-4 w-4" /> Select Photo
+                    <Input
+                      id="avatar"
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={handleAvatarChange}
+                    />
+                  </Label>
+
+                  {avatarBase64 && (
+                    <Button
+                      onClick={handleUploadImage}
+                      disabled={isUploading}
+                      className="w-fit"
+                    >
+                      {isUploading ? "Uploading..." : "Upload Image"}
+                    </Button>
+                  )}
+                </div>
               )}
             </div>
 
