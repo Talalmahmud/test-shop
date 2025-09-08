@@ -47,7 +47,7 @@ export default function ProductCard({ item, className }: ProductCardProps) {
               fill
               className="object-fill transition-transform duration-300 group-hover:scale-105"
             />
-            <div className=" hidden group-hover:grid absolute bottom-0 w-full  grid-cols-5  bg-gray-500 text-white">
+            {/* <div className=" hidden group-hover:grid absolute bottom-0 w-full  grid-cols-5  bg-gray-500 text-white">
               <p className=" text-center hover:bg-white hover:text-black">sm</p>
               <p className=" text-center hover:bg-white hover:text-black">md</p>
               <p className=" text-center hover:bg-white hover:text-black">lg</p>
@@ -55,7 +55,7 @@ export default function ProductCard({ item, className }: ProductCardProps) {
               <p className=" text-center hover:bg-white hover:text-black">
                 xxl
               </p>
-            </div>
+            </div> */}
           </div>
 
           {/* Title */}

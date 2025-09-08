@@ -1,118 +1,11 @@
 import Hero from "@/components/shared/hero";
-import ProductSlider from "@/components/shared/slider";
 import ProductSlider2 from "@/components/shared/slider2";
-import TrendCollection from "@/components/shared/trend-collection";
 
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import Link from "next/link";
 
-const products = [
-  {
-    id: 1,
-    image:
-      "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8c2hvZXxlbnwwfHwwfHx8MA%3D%3D",
-    title: "Hyperloop Hoodie",
-    reviews: 1281,
-    rating: 5,
-    originalPrice: 15800,
-    discountedPrice: 9400,
-    entries: 9400,
-    tag: "1x Entries",
-    colorOptions: ["#cccccc", "#000000", "#2f4f4f", "#6b7280", "#374151"],
-  },
-  {
-    id: 2,
-    image:
-      "https://images.unsplash.com/photo-1521223890158-f9f7c3d5d504?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8bWFuJTIwamFja2V0fGVufDB8fDB8fHww",
-    title: "AO Long Sleeve Curve-Hem Tee",
-    reviews: 2062,
-    rating: 5,
-    originalPrice: 8600,
-    discountedPrice: 5100,
-    entries: 5100,
-    tag: "1x Entries",
-    colorOptions: ["#cccccc", "#000000", "#374151"],
-  },
-  {
-    id: 3,
-    image:
-      "https://images.unsplash.com/photo-1611312449408-fcece27cdbb7?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OHx8bWFuJTIwamFja2V0fGVufDB8fDB8fHww",
-    title: "Hyperloop Hoodie",
-    reviews: 1281,
-    rating: 5,
-    originalPrice: 15800,
-    discountedPrice: 9400,
-    entries: 9400,
-    tag: "1x Entries",
-    colorOptions: ["#cccccc", "#000000", "#2f4f4f", "#6b7280", "#374151"],
-  },
-  {
-    id: 4,
-    image:
-      "https://images.unsplash.com/photo-1602293589930-45aad59ba3ab?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cGFudHxlbnwwfHwwfHx8MA%3D%3D",
-    title: "AO Long Sleeve Curve-Hem Tee",
-    reviews: 2062,
-    rating: 5,
-    originalPrice: 8600,
-    discountedPrice: 5100,
-    entries: 5100,
-    tag: "1x Entries",
-    colorOptions: ["#cccccc", "#000000", "#374151"],
-  },
-  {
-    id: 5,
-    image:
-      "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8c2hvZXxlbnwwfHwwfHx8MA%3D%3D",
-    title: "Hyperloop Hoodie",
-    reviews: 1281,
-    rating: 5,
-    originalPrice: 15800,
-    discountedPrice: 9400,
-    entries: 9400,
-    tag: "1x Entries",
-    colorOptions: ["#cccccc", "#000000", "#2f4f4f", "#6b7280", "#374151"],
-  },
-  {
-    id: 6,
-    image:
-      "https://images.unsplash.com/photo-1602293589930-45aad59ba3ab?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cGFudHxlbnwwfHwwfHx8MA%3D%3D",
-    title: "AO Long Sleeve Curve-Hem Tee",
-    reviews: 2062,
-    rating: 5,
-    originalPrice: 8600,
-    discountedPrice: 5100,
-    entries: 5100,
-    tag: "1x Entries",
-    colorOptions: ["#cccccc", "#000000", "#374151"],
-  },
-  {
-    id: 7,
-    image:
-      "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8c2hvZXxlbnwwfHwwfHx8MA%3D%3D",
-    title: "Hyperloop Hoodie",
-    reviews: 1281,
-    rating: 5,
-    originalPrice: 15800,
-    discountedPrice: 9400,
-    entries: 9400,
-    tag: "1x Entries",
-    colorOptions: ["#cccccc", "#000000", "#2f4f4f", "#6b7280", "#374151"],
-  },
-  {
-    id: 8,
-    image:
-      "https://images.unsplash.com/photo-1602293589930-45aad59ba3ab?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cGFudHxlbnwwfHwwfHx8MA%3D%3D",
-    title: "AO Long Sleeve Curve-Hem Tee",
-    reviews: 2062,
-    rating: 5,
-    originalPrice: 8600,
-    discountedPrice: 5100,
-    entries: 5100,
-    tag: "1x Entries",
-    colorOptions: ["#cccccc", "#000000", "#374151"],
-  },
-];
+
 type Category = {
   id: number;
   name: string;

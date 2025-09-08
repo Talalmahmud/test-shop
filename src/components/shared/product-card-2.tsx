@@ -86,26 +86,12 @@ export default function ProductCard2({
             />
 
             {/* Size options on hover */}
-            <div className="hidden group-hover:grid absolute bottom-0 w-full grid-cols-1 bg-gray-800/90 text-white text-xs">
+            {/* <div className="hidden group-hover:grid absolute bottom-0 w-full grid-cols-1 bg-gray-800/90 text-white text-xs">
               <button className="text-center py-2 px-2 hover:bg-black/60 font-semibold  cursor-pointer">
                 Quick Cart
               </button>
-              {/* <p className="text-center py-2 hover:bg-white hover:text-black cursor-pointer">
-                S
-              </p>
-              <p className="text-center py-2 hover:bg-white hover:text-black cursor-pointer">
-                M
-              </p>
-              <p className="text-center py-2 hover:bg-white hover:text-black cursor-pointer">
-                L
-              </p>
-              <p className="text-center py-2 hover:bg-white hover:text-black cursor-pointer">
-                XL
-              </p>
-              <p className="text-center py-2 hover:bg-white hover:text-black cursor-pointer">
-                XXL
-              </p> */}
-            </div>
+            
+            </div> */}
           </div>
 
           {/* Content */}
