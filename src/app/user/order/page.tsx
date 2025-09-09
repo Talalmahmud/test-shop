@@ -12,6 +12,9 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { getOrder } from "@/services/order";
 import { useCart } from "@/components/CartContext";
+import { Button } from "@/components/ui/button";
+import { Eye } from "lucide-react";
+import Link from "next/link";
 
 interface Order {
   id: number;
@@ -134,6 +137,13 @@ export default function OrdersTableSimple() {
                 >
                   {order.delivery_status_string}
                 </Badge>
+              </TableCell>
+              <TableCell>
+                <Link href={`/user/order/${order.id}`}>
+                  <Button variant="outline" size="sm">
+                    <Eye className="h-4 w-4" />
+                  </Button>
+                </Link>
               </TableCell>
             </TableRow>
           ))}
