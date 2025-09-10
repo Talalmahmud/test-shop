@@ -106,7 +106,7 @@ export default function OrdersTableSimple() {
   }
 
   return (
-    <div className="">
+    <div className="w-full ">
       <p className="text-center py-4 font-bold text-2xl">Order List</p>
       <Table>
         <TableHeader>
