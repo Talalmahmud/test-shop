@@ -93,7 +93,7 @@ export default async function Page({
     return <ProductLoading />;
   }
   return (
-    <div className="container mx-auto p-6 max-w-4xl">
+    <div className=" p-6">
       <Link href={"/user/order"}>
         {" "}
         <Button variant="outline" className="flex items-center gap-2">

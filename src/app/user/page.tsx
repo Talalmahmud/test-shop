@@ -31,6 +31,10 @@ interface UserProfile {
   balance: number;
   referral_code: string | null;
   email_verified_at: string | null;
+  upload: {
+    file_original_name: "bata-gallary";
+    file_name: "https://cut-x.ekopiidev.com/uploads/all/999999999920250910061904.jpeg";
+  };
 }
 
 export default function ProfilePage() {
@@ -48,6 +52,7 @@ export default function ProfilePage() {
   const fetchData = async () => {
     const res = await getUserProfile();
     console.log(res);
+
     setUser(res);
     setFormData({
       name: res.name,
@@ -82,13 +87,15 @@ export default function ProfilePage() {
 
   // Upload avatar to API
   const handleUploadImage = async () => {
-    console.log({ image: avatarBase64, fileName: avatarFileName });
+    console.log({ image: avatarBase64, filename: avatarFileName });
+
     if (!avatarBase64 || !avatarFileName) return;
 
     setIsUploading(true);
     try {
       await updateUserImage({ image: avatarBase64, filename: avatarFileName });
       fetchData();
+      setIsEditing(false);
       alert("Image uploaded successfully!");
     } catch (err) {
       console.error(err);
@@ -171,7 +178,7 @@ export default function ProfilePage() {
             <div className="flex items-center gap-4">
               <Avatar className="h-20 w-20">
                 <AvatarImage
-                  src={avatarBase64 || user.avatar || ""}
+                  src={user.upload.file_name || avatarBase64 || ""}
                   alt={user.name}
                 />
                 <AvatarFallback>{getInitials(user.name)}</AvatarFallback>
