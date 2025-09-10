@@ -32,8 +32,8 @@ interface UserProfile {
   referral_code: string | null;
   email_verified_at: string | null;
   upload: {
-    file_original_name: "bata-gallary";
-    file_name: "https://cut-x.ekopiidev.com/uploads/all/999999999920250910061904.jpeg";
+    file_original_name: string;
+    file_name: string;
   };
 }
 
@@ -47,12 +47,11 @@ export default function ProfilePage() {
 
   const [avatarBase64, setAvatarBase64] = useState<string | null>(null);
   const [avatarFileName, setAvatarFileName] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   // Fetch profile data
   const fetchData = async () => {
     const res = await getUserProfile();
-    console.log(res);
-
     setUser(res);
     setFormData({
       name: res.name,
@@ -75,31 +74,57 @@ export default function ProfilePage() {
     });
   };
 
-  // Handle avatar select
+  // Handle avatar select with validation
   const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    setError(null);
+
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
-      const base64 = await fileToBase64(file);
-      setAvatarBase64(base64);
-      setAvatarFileName(file.name);
+
+      // Validate type
+      const validTypes = ["image/png", "image/jpeg", "image/jpg", "image/webp"];
+      if (!validTypes.includes(file.type)) {
+        setError("❌ Only PNG, JPEG, JPG, and WEBP files are allowed.");
+        return;
+      }
+
+      // Validate size (≤2MB)
+      if (file.size > 1 * 1024 * 1024) {
+        setError("❌ File size must be less than 1MB.");
+        return;
+      }
+
+      // Convert to base64 for preview
+      try {
+        const base64 = await fileToBase64(file);
+        setAvatarBase64(base64);
+        setAvatarFileName(file.name);
+      } catch {
+        setError("❌ Failed to read file. Please try again.");
+      }
     }
   };
 
   // Upload avatar to API
   const handleUploadImage = async () => {
-    console.log({ image: avatarBase64, filename: avatarFileName });
+    setError(null);
 
-    if (!avatarBase64 || !avatarFileName) return;
+    if (!avatarBase64 || !avatarFileName) {
+      setError("❌ Please select a valid image before uploading.");
+      return;
+    }
 
     setIsUploading(true);
     try {
       await updateUserImage({ image: avatarBase64, filename: avatarFileName });
-      fetchData();
+      await fetchData();
       setIsEditing(false);
-      alert("Image uploaded successfully!");
+      setAvatarBase64(null);
+      setAvatarFileName(null);
+      alert("✅ Image uploaded successfully!");
     } catch (err) {
       console.error(err);
-      alert("❌ Failed to upload image");
+      setError("❌ Failed to upload image. Please try again.");
     } finally {
       setIsUploading(false);
     }
@@ -175,10 +200,11 @@ export default function ProfilePage() {
           </CardHeader>
           <CardContent className="space-y-6">
             {/* Avatar */}
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-6">
+              {/* Show preview if a new image is selected, else show current avatar */}
               <Avatar className="h-20 w-20">
                 <AvatarImage
-                  src={user.upload.file_name || avatarBase64 || ""}
+                  src={avatarBase64 || user.upload.file_name || ""}
                   alt={user.name}
                 />
                 <AvatarFallback>{getInitials(user.name)}</AvatarFallback>
@@ -200,15 +226,22 @@ export default function ProfilePage() {
                     />
                   </Label>
 
-                  {avatarBase64 && (
-                    <Button
-                      onClick={handleUploadImage}
-                      disabled={isUploading}
-                      className="w-fit"
-                    >
-                      {isUploading ? "Uploading..." : "Upload Image"}
-                    </Button>
+                  {avatarBase64 && !error && (
+                    <>
+                      <p className="text-sm text-muted-foreground">
+                        Preview before saving
+                      </p>
+                      <Button
+                        onClick={handleUploadImage}
+                        disabled={isUploading}
+                        className="w-fit"
+                      >
+                        {isUploading ? "Uploading..." : "Upload Image"}
+                      </Button>
+                    </>
                   )}
+
+                  {error && <p className="text-sm text-red-500">{error}</p>}
                 </div>
               )}
             </div>
