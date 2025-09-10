@@ -5,8 +5,9 @@ import {
   LogOut,
   Menu,
   UserRound,
+  X,
 } from "lucide-react";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Sheet,
   SheetClose,
@@ -28,6 +29,9 @@ import { Button } from "../ui/button";
 import { userLogOut } from "@/app/action";
 import { useRouter } from "next/navigation";
 import { useCart } from "../CartContext";
+import { UserProfile } from "@/app/user/page";
+import { getUserProfile } from "@/services/user";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 
 // Define the category type
 type CategoryItem = {
@@ -54,6 +58,7 @@ interface MobileMenuProps {
 
 const MobileMenu = ({ categories, isCookie }: MobileMenuProps) => {
   const { fetchCart } = useCart();
+  const [user, setUser] = useState<UserProfile | null>(null);
 
   const router = useRouter();
   const handleLogout = async () => {
@@ -66,6 +71,22 @@ const MobileMenu = ({ categories, isCookie }: MobileMenuProps) => {
       console.error("Logout failed:", error);
     }
   };
+
+  const getInitials = (name: string) =>
+    name
+      .split(" ")
+      .map((part) => part[0])
+      .join("")
+      .toUpperCase()
+      .slice(0, 2);
+  const fetchData = async () => {
+    const res = await getUserProfile();
+    setUser(res);
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
   return (
     <div className="pl-6 block lg:hidden">
       <Sheet>
@@ -76,24 +97,46 @@ const MobileMenu = ({ categories, isCookie }: MobileMenuProps) => {
         </SheetTrigger>
         <SheetContent className="px-4 min-w-full sm:min-w-[400px] md:min-w-[500px] lg:min-w-[500px] xl:min-w-[500px] 2xl:min-w-[600px] overflow-y-auto">
           <SheetHeader className="mb-6">
-            <SheetTitle className="text-xl flex justify-between font-bold">
+            <SheetTitle className="text-xl flex items-center justify-between font-bold">
               <SheetClose asChild>
                 <Link href={"/"} className=" flex">
                   <Image src={"/logo.svg"} alt="Logo" width={30} height={30} />
-                  <h2 className=" text-xl font-bold font-sans">
+                  <h2 className=" text-[30px] font-bold font-sans">
                     CUT<span className=" text-[#7d5c0a]">X</span>
                   </h2>
                 </Link>
               </SheetClose>
+              <SheetClose asChild>
+                <Button
+                  variant={"outline"}
+                  className=" h-8 w-8 cursor-pointer rounded-full"
+                >
+                  {" "}
+                  <X size={16} />
+                </Button>
+              </SheetClose>
             </SheetTitle>
-            <SheetDescription className="text-base text-end">
+            <SheetDescription className="text-base flex flex-col items-center ">
+              {user && (
+                <Avatar className="h-20 w-20">
+                  <AvatarImage
+                    src={
+                      user.upload
+                        ? user.upload.file_name
+                        : "https://plus.unsplash.com/premium_photo-1677094310956-7f88ae5f5c6b?q=80&w=880&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                    }
+                    alt={user.name}
+                  />
+                  <AvatarFallback>{getInitials(user.name)}</AvatarFallback>
+                </Avatar>
+              )}
               {isCookie && (
                 <SheetClose asChild>
                   <Link
                     href={"/user"}
-                    className=" text-gray-600 hover:text-black hover:underline"
+                    className=" text-blue-800 hover:text-black hover:underline"
                   >
-                    Profile
+                    {user?.name}
                   </Link>
                 </SheetClose>
               )}
@@ -164,16 +207,6 @@ const MobileMenu = ({ categories, isCookie }: MobileMenuProps) => {
           </Accordion>
 
           <div className="mt-8 pt-6 border-t border-gray-200">
-            <div className=" flex items-center gap-2 mb-2">
-              <h3 className="font-semibold">Account</h3>
-              <SheetClose asChild>
-                <Link href={"/user"}>
-                  <Button className=" h-8 w-8 bg-gray-400 rounded-full flex justify-center items-center">
-                    <UserRound size={14} />
-                  </Button>
-                </Link>
-              </SheetClose>
-            </div>
             <div className="flex flex-col gap-1">
               {isCookie ? (
                 <div className="  ">

@@ -19,7 +19,7 @@ import { getUserProfile, updateUserImage } from "@/services/user";
 import { updateUserProfile } from "../action";
 import { ShippingAddressSection } from "@/components/shared/user-shipping-address";
 
-interface UserProfile {
+export interface UserProfile {
   id: number;
   name: string;
   email: string;
