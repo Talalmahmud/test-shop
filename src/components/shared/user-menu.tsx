@@ -59,11 +59,11 @@ export function UserSidebar({ user }: UserSidebarProps) {
 
   // Desktop sidebar
   return (
-    <div className=" w-16 md:w-64 bg-background border-r ">
+    <div className=" w-full md:w-64 bg-background border-r ">
       {/* Sidebar Content */}
-      <div className="flex flex-col p-2">
+      <div className="flex flex-row md:flex-col p-2">
         {/* User Info */}
-        {user && (
+        {/* {user && (
           <div className="mb-8 p-4 rounded-lg bg-muted">
             <div className="flex items-center space-x-3">
               <div className="h-10 w-10 rounded-full bg-primary flex items-center justify-center text-primary-foreground font-medium">
@@ -82,10 +82,10 @@ export function UserSidebar({ user }: UserSidebarProps) {
               </div>
             </div>
           </div>
-        )}
+        )} */}
 
         {/* Navigation Menu */}
-        <nav className="flex-1 space-y-2">
+        <nav className=" hidden md:flex flex-col flex-1 space-y-2">
           {menuItems.map((item) => {
             const IconComponent = item.icon;
             const isActive = pathname === item.href;
@@ -106,9 +106,39 @@ export function UserSidebar({ user }: UserSidebarProps) {
             );
           })}
         </nav>
+        <div className="flex md:hidden justify-between items-center w-full border-b-[1px] border-gray-200 pb-1 sticky z-20 top-20">
+          {menuItems.map((item) => {
+            const IconComponent = item.icon;
+            const isActive = pathname === item.href;
+
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={`
+                  flex items-center space-x-3 px-4 py-3 rounded-lg text-sm font-medium
+                  transition-colors hover:bg-accent hover:text-accent-foreground
+                  ${isActive ? "bg-primary text-primary-foreground" : ""}
+                `}
+              >
+                <IconComponent className="min-h-5 min-w-5" />
+              </Link>
+            );
+          })}
+          <div className="">
+            <Button
+              variant="ghost"
+              className="w-full justify-start text-red-600 hover:text-red-700 hover:bg-red-50"
+              onClick={handleLogout}
+            >
+              <LogOut className="min-h-5 min-w-5 mr-3" />
+              <span className=" md:block hidden"> Log out</span>
+            </Button>
+          </div>
+        </div>
 
         {/* Logout Button */}
-        <div className="pt-4 border-t">
+        <div className="pt-4 border-t hidden md:block">
           <Button
             variant="ghost"
             className="w-full justify-start text-red-600 hover:text-red-700 hover:bg-red-50"
