@@ -59,7 +59,7 @@ export function UserSidebar({ user }: UserSidebarProps) {
 
   // Desktop sidebar
   return (
-    <div className=" w-16 md:w-64 bg-background border-r sticky left-0 top-10">
+    <div className=" w-16 md:w-64 bg-background border-r ">
       {/* Sidebar Content */}
       <div className="flex flex-col p-2">
         {/* User Info */}

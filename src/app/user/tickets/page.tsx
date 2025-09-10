@@ -334,7 +334,7 @@ export default function TicketsPage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="w-full space-y-6">
       <div className="flex items-start md:items-center md:flex-row flex-col justify-between">
         <div>
           <h1 className="text-3xl font-bold">Support Tickets</h1>
@@ -369,6 +369,8 @@ export default function TicketsPage() {
         </Card>
       ) : (
         <Table>
+          {" "}
+          {/* 👈 force minimum width */}
           <TableHeader>
             <TableRow>
               <TableHead>Ticket #</TableHead>
@@ -383,9 +385,7 @@ export default function TicketsPage() {
               <TableRow key={ticket.id}>
                 <TableCell className="font-medium">{ticket.code}</TableCell>
                 <TableCell>{ticket.subject}</TableCell>
-                <TableCell className=" font-semibold">
-                  {ticket.status}
-                </TableCell>
+                <TableCell className="font-semibold">{ticket.status}</TableCell>
                 <TableCell>
                   {new Date(ticket.created_at).toLocaleDateString()}
                 </TableCell>
@@ -398,30 +398,6 @@ export default function TicketsPage() {
                     >
                       <Eye className="h-4 w-4" />
                     </Button>
-                    {/* <AlertDialog>
-                          <AlertDialogTrigger asChild>
-                            <Button variant="destructive" size="sm">
-                              <Trash2 className="h-4 w-4" />
-                            </Button>
-                          </AlertDialogTrigger>
-                          <AlertDialogContent>
-                            <AlertDialogHeader>
-                              <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                              <AlertDialogDescription>
-                                This action cannot be undone. This will
-                                permanently delete the ticket and all its data.
-                              </AlertDialogDescription>
-                            </AlertDialogHeader>
-                            <AlertDialogFooter>
-                              <AlertDialogCancel>Cancel</AlertDialogCancel>
-                              <AlertDialogAction
-                                onClick={() => handleDeleteTicket(ticket.id)}
-                              >
-                                Delete
-                              </AlertDialogAction>
-                            </AlertDialogFooter>
-                          </AlertDialogContent>
-                        </AlertDialog> */}
                   </div>
                 </TableCell>
               </TableRow>
