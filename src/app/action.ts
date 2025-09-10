@@ -16,7 +16,7 @@ export const userLogin = async (
     body: JSON.stringify({ email, password, remember_me: remember }),
   });
 
-  if (!res.ok) throw new Error(`Login failed: ${res.status}`);
+  if (!res.ok) return false;
 
   const resData = await res.json();
   if (!resData?.access_token) throw new Error("No token received");
@@ -29,7 +29,7 @@ export const userLogin = async (
     maxAge: remember ? 60 * 60 * 24 * 30 : undefined, // 30 days or session cookie
   });
 
-  redirect("/user");
+  return true;
 };
 
 export const userSignUp = async (
@@ -53,7 +53,7 @@ export const userSignUp = async (
 
   const resData = await res.json();
 
-  console.log(resData);
+  return resData;
 };
 
 export const updateUserProfile = async (

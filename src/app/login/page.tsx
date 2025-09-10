@@ -14,6 +14,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { userLogin, userSignUp } from "../action";
 import { useCart } from "@/components/CartContext";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 // ✅ Zod schemas
 const signInSchema = z.object({
@@ -32,6 +34,7 @@ type SignInFormValues = z.infer<typeof signInSchema>;
 type SignUpFormValues = z.infer<typeof signUpSchema>;
 
 export default function AuthPage() {
+  const router = useRouter();
   const [loading, setLoading] = React.useState(false);
   const { fetchCart } = useCart();
 
@@ -58,7 +61,18 @@ export default function AuthPage() {
   const onSignIn = async (data: SignInFormValues) => {
     setLoading(true);
     try {
-      await userLogin(data.email, data.password, data.remember_me);
+      const res = await userLogin(data.email, data.password, data.remember_me);
+
+      if (res) {
+        toast.success("Message", { description: "User login is successfully" });
+        router.back();
+      } else {
+        {
+          toast.error("Message", {
+            description: "User email or password may be wrong.",
+          });
+        }
+      }
     } finally {
       setLoading(false);
     }
@@ -67,7 +81,9 @@ export default function AuthPage() {
   const onSignUp = async (data: SignUpFormValues) => {
     setLoading(true);
     try {
-      await userSignUp(data.name, data.email, data.password);
+      const res = await userSignUp(data.name, data.email, data.password);
+
+      toast.success("Message", { description: res?.message });
       fetchCart();
     } finally {
       setLoading(false);

@@ -5,6 +5,7 @@ import Header from "@/components/shared/header";
 import Notice from "@/components/shared/notice";
 import Footer from "@/components/shared/footer";
 import { CartProvider } from "@/components/CartContext";
+import { Toaster } from "@/components/ui/sonner";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -56,7 +57,7 @@ export const metadata: Metadata = {
     shortcut: "/favicon.ico",
     apple: "/apple-touch-icon.png",
   },
-  // metadataBase: new URL("https://yourdomain.com"), 
+  // metadataBase: new URL("https://yourdomain.com"),
 };
 
 export default function RootLayout({
@@ -75,6 +76,7 @@ export default function RootLayout({
           {children}
           <Footer />
         </CartProvider>
+        <Toaster richColors />
       </body>
     </html>
   );

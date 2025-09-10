@@ -292,7 +292,7 @@ export default function ProductDetailClient({
             (photo: { original: string }, i: number) => (
               <div
                 key={i}
-                className="relative w-full max-h-[450px] rounded-xl overflow-hidden bg-gray-100"
+                className="relative w-full min-h-[400px] md:min-h-[450px] rounded-xl overflow-hidden bg-gray-100"
               >
                 <Image
                   src={photo.original}
