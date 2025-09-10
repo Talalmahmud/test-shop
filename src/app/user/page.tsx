@@ -153,7 +153,7 @@ export default function ProfilePage() {
       .slice(0, 2);
 
   if (!user) return <p>Loading...</p>;
-
+  console.log(user);
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -204,7 +204,11 @@ export default function ProfilePage() {
               {/* Show preview if a new image is selected, else show current avatar */}
               <Avatar className="h-20 w-20">
                 <AvatarImage
-                  src={avatarBase64 || user.upload.file_name || ""}
+                  src={
+                    avatarBase64 || user.upload
+                      ? user.upload.file_name
+                      : "https://plus.unsplash.com/premium_photo-1677094310956-7f88ae5f5c6b?q=80&w=880&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                  }
                   alt={user.name}
                 />
                 <AvatarFallback>{getInitials(user.name)}</AvatarFallback>
